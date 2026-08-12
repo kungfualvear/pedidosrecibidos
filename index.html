@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <title>Recetas/Pedidos Recibidos</title>
+
 
 <style>
 
@@ -16,16 +20,19 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
+
 body{
     background:#f3f4f6;
     color:#111827;
     padding:20px;
 }
 
+
 .app{
     max-width:520px;
     margin:auto;
 }
+
 
 .card{
     background:#fff;
@@ -34,19 +41,23 @@ body{
     box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
 
+
 h1{
     font-size:27px;
     margin-bottom:22px;
     text-align:center;
 }
 
+
 .screen{
     display:none;
 }
 
+
 .screen.active{
     display:block;
 }
+
 
 .menuButton{
 
@@ -65,7 +76,9 @@ h1{
     cursor:pointer;
 
     margin-bottom:18px;
+
 }
+
 
 .back{
 
@@ -78,13 +91,14 @@ h1{
     cursor:pointer;
 
     margin-bottom:20px;
+
 }
+
 
 .campo{
-
     margin-bottom:18px;
-
 }
+
 
 label{
 
@@ -95,6 +109,7 @@ label{
     font-weight:600;
 
 }
+
 
 input,
 select{
@@ -112,6 +127,7 @@ select{
 
 }
 
+
 input:focus,
 select:focus{
 
@@ -119,6 +135,7 @@ select:focus{
     border-color:#111827;
 
 }
+
 
 .submit{
 
@@ -141,6 +158,15 @@ select:focus{
 
 }
 
+
+.submit:disabled{
+
+    opacity:.6;
+    cursor:not-allowed;
+
+}
+
+
 .resultado{
 
     margin-top:18px;
@@ -155,6 +181,7 @@ select:focus{
 
 }
 
+
 .exito{
 
     display:block;
@@ -164,6 +191,7 @@ select:focus{
     color:#065F46;
 
 }
+
 
 .error{
 
@@ -175,29 +203,162 @@ select:focus{
 
 }
 
+
+/* =====================================================
+   RESULTADOS DE CONSULTA
+   ===================================================== */
+
+
+.registro{
+
+    border:1px solid #E5E7EB;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    margin-bottom:12px;
+
+    background:#F9FAFB;
+
+}
+
+
+.registro strong{
+
+    color:#111827;
+
+}
+
+
+.registroLinea{
+
+    margin-top:5px;
+
+    font-size:14px;
+
+    color:#4B5563;
+
+}
+
+
+.sinResultados{
+
+    padding:18px;
+
+    text-align:center;
+
+    color:#6B7280;
+
+    background:#F9FAFB;
+
+    border-radius:12px;
+
+}
+
+
+/* =====================================================
+   SEPARADOR
+   ===================================================== */
+
+
+.separador{
+
+    height:1px;
+
+    background:#E5E7EB;
+
+    margin:20px 0;
+
+}
+
+
+/* =====================================================
+   CONTADOR DE RESULTADOS
+   ===================================================== */
+
+
+.contador{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    margin-bottom:12px;
+
+    color:#374151;
+
+    text-align:center;
+
+}
+
+
+/* =====================================================
+   BOTÓN LIMPIAR
+   ===================================================== */
+
+
+.botonSecundario{
+
+    width:100%;
+
+    height:50px;
+
+    background:#fff;
+
+    color:#111827;
+
+    border:2px solid #E5E7EB;
+
+    border-radius:11px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+}
+
+
+.botonSecundario:hover{
+
+    background:#F9FAFB;
+
+}
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-<!--========================================================-->
-<!-- PANTALLA INICIO -->
-<!--========================================================-->
+
+<!-- =====================================================
+     PANTALLA INICIO
+     ===================================================== -->
+
 
 <section
 id="inicio"
 class="screen active">
 
+
 <div class="card">
+
 
 <h1>
 
 Recetas/Pedidos Recibidos
 
 </h1>
+
 
 <button
 id="abrirCarga"
@@ -207,6 +368,7 @@ Cargar registros
 
 </button>
 
+
 <button
 id="abrirConsulta"
 class="menuButton">
@@ -215,19 +377,25 @@ Consultar registros
 
 </button>
 
+
 </div>
 
 </section>
 
-<!--========================================================-->
-<!-- PANTALLA CARGAR -->
-<!--========================================================-->
+
+
+<!-- =====================================================
+     PANTALLA CARGA
+     ===================================================== -->
+
 
 <section
 id="pantallaCarga"
 class="screen">
 
+
 <div class="card">
+
 
 <button
 class="back"
@@ -237,19 +405,34 @@ id="volverInicio1">
 
 </button>
 
+
 <h1>
 
 Recetas/Pedidos Recibidos
 
 </h1>
 
+
 <form id="formulario">
+
+
+<!-- MÉDICO -->
+
 
 <div class="campo">
 
-<label>Médico</label>
 
-<select id="medico">
+<label>
+
+Médico
+
+</label>
+
+
+<select
+id="medico"
+required>
+
 
 <option selected>
 
@@ -257,17 +440,26 @@ Dr. Bustos
 
 </option>
 
+
 <option>
 
 Dr. Zalazar
 
 </option>
 
+
 </select>
+
 
 </div>
 
+
+
+<!-- PACIENTE -->
+
+
 <div class="campo">
+
 
 <label>
 
@@ -275,14 +467,22 @@ Paciente
 
 </label>
 
+
 <input
 id="paciente"
 autocomplete="off"
 required>
 
+
 </div>
 
+
+
+<!-- SOLICITA -->
+
+
 <div class="campo">
+
 
 <label>
 
@@ -290,9 +490,11 @@ Solicita
 
 </label>
 
+
 <select
 id="solicita"
 required>
+
 
 <option value="">
 
@@ -300,11 +502,13 @@ Seleccionar...
 
 </option>
 
+
 <option>
 
 Receta
 
 </option>
+
 
 <option>
 
@@ -312,11 +516,13 @@ Pedido
 
 </option>
 
+
 <option>
 
 Receta y Pedido
 
 </option>
+
 
 <option>
 
@@ -324,11 +530,13 @@ Empadronamiento
 
 </option>
 
+
 <option>
 
 Receta y Empadronamiento
 
 </option>
+
 
 <option>
 
@@ -336,17 +544,23 @@ Otro
 
 </option>
 
+
 </select>
+
 
 </div>
 
+
+
 <button
 class="submit"
-id="boton">
+id="boton"
+type="submit">
 
 Registrar
 
 </button>
+
 
 <div
 id="resultado"
@@ -354,21 +568,29 @@ class="resultado">
 
 </div>
 
+
 </form>
+
 
 </div>
 
+
 </section>
 
-<!--========================================================-->
-<!-- PANTALLA CONSULTAR (SE IMPLEMENTARÁ EN PARTE 2) -->
-<!--========================================================-->
+
+
+<!-- =====================================================
+     PANTALLA CONSULTA
+     ===================================================== -->
+
 
 <section
 id="pantallaConsulta"
 class="screen">
 
+
 <div class="card">
+
 
 <button
 class="back"
@@ -378,224 +600,1075 @@ id="volverInicio2">
 
 </button>
 
+
 <h1>
 
 Consultar registros
 
 </h1>
 
+
+
+<!-- BÚSQUEDA GENERAL -->
+
+
+<div class="campo">
+
+
+<label>
+
+Buscar
+
+</label>
+
+
+<input
+id="busqueda"
+type="search"
+placeholder="Paciente, ID, médico..."
+autocomplete="off">
+
+
 </div>
+
+
+
+<!-- FILTRO MÉDICO -->
+
+
+<div class="campo">
+
+
+<label>
+
+Médico
+
+</label>
+
+
+<select
+id="filtroMedico">
+
+
+<option value="">
+
+Todos
+
+</option>
+
+
+<option>
+
+Dr. Bustos
+
+</option>
+
+
+<option>
+
+Dr. Zalazar
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<!-- FILTRO SOLICITA -->
+
+
+<div class="campo">
+
+
+<label>
+
+Solicita
+
+</label>
+
+
+<select
+id="filtroSolicita">
+
+
+<option value="">
+
+Todos
+
+</option>
+
+
+<option>
+
+Receta
+
+</option>
+
+
+<option>
+
+Pedido
+
+</option>
+
+
+<option>
+
+Receta y Pedido
+
+</option>
+
+
+<option>
+
+Empadronamiento
+
+</option>
+
+
+<option>
+
+Receta y Empadronamiento
+
+</option>
+
+
+<option>
+
+Otro
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<!-- FILTRO FECHA -->
+
+
+<div class="campo">
+
+
+<label>
+
+Fecha
+
+</label>
+
+
+<input
+id="filtroFecha"
+type="date">
+
+
+</div>
+
+
+
+<!-- BOTÓN BUSCAR -->
+
+
+<button
+class="submit"
+id="botonBuscar"
+type="button">
+
+Buscar
+
+</button>
+
+
+
+<!-- BOTÓN LIMPIAR -->
+
+
+<button
+class="botonSecundario"
+id="botonLimpiar"
+type="button">
+
+Limpiar filtros
+
+</button>
+
+
+
+<div
+id="estadoBusqueda"
+class="resultado">
+
+</div>
+
+
+
+<div
+id="resultadosBusqueda"
+style="margin-top:18px;">
+
+</div>
+
+
+</div>
+
 
 </section>
 
+
 </div>
+
+
 
 <script>
 
-const URL_APPS_SCRIPT="https://script.google.com/macros/s/AKfycbx46ZfE083mZ7Pv9C53z-KnleGVEmca1dzR56uhhT6g4aE2wSzeIi5MPXXVLqGnAcmxrA/exec";
 
-const screens=document.querySelectorAll(".screen");
+// ========================================================
+// CONFIGURACIÓN
+// ========================================================
+
+
+const URL_APPS_SCRIPT =
+"https://script.google.com/macros/s/AKfycby7t8lwOICXhgAD22sLtZWvSgtFKqWjd0B4Mq7U83mJuCxHMmGRdlMXwo9lEomAeIzkVg/exec";
+
+
+
+// ========================================================
+// REFERENCIAS
+// ========================================================
+
+
+const screens =
+document.querySelectorAll(".screen");
+
+
+const inicio =
+document.getElementById("inicio");
+
+
+const pantallaCarga =
+document.getElementById("pantallaCarga");
+
+
+const pantallaConsulta =
+document.getElementById("pantallaConsulta");
+
+
+const abrirCarga =
+document.getElementById("abrirCarga");
+
+
+const abrirConsulta =
+document.getElementById("abrirConsulta");
+
+
+const volverInicio1 =
+document.getElementById("volverInicio1");
+
+
+const volverInicio2 =
+document.getElementById("volverInicio2");
+
+
+const formulario =
+document.getElementById("formulario");
+
+
+const medico =
+document.getElementById("medico");
+
+
+const paciente =
+document.getElementById("paciente");
+
+
+const solicita =
+document.getElementById("solicita");
+
+
+const boton =
+document.getElementById("boton");
+
+
+const resultado =
+document.getElementById("resultado");
+
+
+
+// ========================================================
+// FUNCIÓN CAMBIO DE PANTALLA
+// ========================================================
+
 
 function abrir(id){
 
-    screens.forEach(s=>s.classList.remove("active"));
+    screens.forEach(
+        s => s.classList.remove("active")
+    );
+
 
     document
-    .getElementById(id)
-    .classList
-    .add("active");
+        .getElementById(id)
+        .classList.add("active");
 
 }
 
-abrirCarga.onclick=()=>{
+
+
+// ========================================================
+// NAVEGACIÓN
+// ========================================================
+
+
+abrirCarga.onclick = () => {
 
     abrir("pantallaCarga");
 
-    setTimeout(()=>paciente.focus(),150);
 
-}
-
-abrirConsulta.onclick=()=>{
-
-    abrir("pantallaConsulta");
-
-}
-
-volverInicio1.onclick=()=>{
-
-    abrir("inicio");
-
-}
-
-volverInicio2.onclick=()=>{
-
-    abrir("inicio");
-
-}
-
-const CLAVE_MEDICO="medicoSeleccionado";
-
-medico.value=
-
-localStorage.getItem(CLAVE_MEDICO)
-
-||
-
-"Dr. Bustos";
-
-medico.onchange=()=>{
-
-localStorage.setItem(
-
-CLAVE_MEDICO,
-
-medico.value
-
-);
+    setTimeout(
+        () => paciente.focus(),
+        150
+    );
 
 };
 
+
+abrirConsulta.onclick = () => {
+
+    abrir("pantallaConsulta");
+
+};
+
+
+volverInicio1.onclick = () => {
+
+    abrir("inicio");
+
+};
+
+
+volverInicio2.onclick = () => {
+
+    abrir("inicio");
+
+};
+
+
+
+// ========================================================
+// MÉDICO SELECCIONADO
+// ========================================================
+
+
+const CLAVE_MEDICO =
+"medicoSeleccionado";
+
+
+medico.value =
+localStorage.getItem(
+    CLAVE_MEDICO
+)
+||
+"Dr. Bustos";
+
+
+medico.onchange = () => {
+
+    localStorage.setItem(
+        CLAVE_MEDICO,
+        medico.value
+    );
+
+};
+
+
+
+// ========================================================
+// CONVERTIR PACIENTE A MAYÚSCULAS
+// ========================================================
+
+
 paciente.addEventListener(
+    "input",
+    function(){
 
-"input",
+        this.value =
+            this.value.toUpperCase();
 
-function(){
-
-this.value=this.value.toUpperCase();
-
-}
-
+    }
 );
+
+
+
+// ========================================================
+// OBTENER FECHA LOCAL
+// ========================================================
+
 
 function obtenerFecha(){
 
-const d=new Date();
+    const d =
+        new Date();
 
-return d.getFullYear()+"-"+
 
-String(d.getMonth()+1).padStart(2,"0")+"-"+
+    return d.getFullYear() +
+        "-" +
+        String(
+            d.getMonth()+1
+        ).padStart(2,"0") +
+        "-" +
+        String(
+            d.getDate()
+        ).padStart(2,"0");
 
-String(d.getDate()).padStart(2,"0");
+}
+
+
+
+// ========================================================
+// MOSTRAR RESULTADO DE REGISTRO
+// ========================================================
+
+
+function mostrarResultado(
+    tipo,
+    texto
+){
+
+    resultado.className =
+        "resultado " +
+        tipo;
+
+
+    resultado.innerHTML =
+        texto;
 
 }
 
-function mostrarResultado(tipo,texto){
 
-resultado.className="resultado "+tipo;
 
-resultado.innerHTML=texto;
+// ========================================================
+// REGISTRAR
+// ========================================================
 
-}
 
 formulario.addEventListener(
+    "submit",
+    async function(e){
 
-"submit",
+        e.preventDefault();
 
-async function(e){
 
-e.preventDefault();
+        const datos =
+            new URLSearchParams();
 
-const datos=new URLSearchParams();
 
-datos.append(
+        datos.append(
+            "fecha",
+            obtenerFecha()
+        );
 
-"fecha",
 
-obtenerFecha()
+        datos.append(
+            "medico",
+            medico.value
+        );
 
+
+        datos.append(
+            "paciente",
+            paciente.value
+                .trim()
+                .toUpperCase()
+        );
+
+
+        datos.append(
+            "solicita",
+            solicita.value
+        );
+
+
+        try{
+
+            boton.disabled =
+                true;
+
+
+            boton.textContent =
+                "Registrando...";
+
+
+            const r =
+                await fetch(
+                    URL_APPS_SCRIPT,
+                    {
+                        method:"POST",
+                        body:datos
+                    }
+                );
+
+
+            const j =
+                await r.json();
+
+
+            if(!j.ok){
+
+                throw new Error(
+                    j.mensaje ||
+                    "Error"
+                );
+
+            }
+
+
+            mostrarResultado(
+                "exito",
+                "Registro realizado<br>" +
+                "<strong>" +
+                j.id +
+                "</strong>"
+            );
+
+
+            paciente.value =
+                "";
+
+
+            solicita.selectedIndex =
+                0;
+
+
+            setTimeout(
+                () => {
+
+                    paciente.focus();
+
+                },
+                100
+            );
+
+
+        }catch(error){
+
+            console.error(error);
+
+
+            mostrarResultado(
+                "error",
+                "No se pudo registrar."
+            );
+
+        }
+
+
+        boton.disabled =
+            false;
+
+
+        boton.textContent =
+            "Registrar";
+
+    }
 );
 
-datos.append(
 
-"medico",
 
-medico.value
+// ========================================================
+// ELEMENTOS DE BÚSQUEDA
+// ========================================================
 
+
+const busqueda =
+document.getElementById(
+    "busqueda"
 );
 
-datos.append(
 
-"paciente",
-
-paciente.value.trim().toUpperCase()
-
+const filtroMedico =
+document.getElementById(
+    "filtroMedico"
 );
 
-datos.append(
 
-"solicita",
-
-solicita.value
-
+const filtroSolicita =
+document.getElementById(
+    "filtroSolicita"
 );
 
-try{
 
-boton.disabled=true;
+const filtroFecha =
+document.getElementById(
+    "filtroFecha"
+);
 
-boton.textContent="Registrando...";
 
-const r=await fetch(
+const botonBuscar =
+document.getElementById(
+    "botonBuscar"
+);
 
-URL_APPS_SCRIPT,
 
-{
+const botonLimpiar =
+document.getElementById(
+    "botonLimpiar"
+);
 
-method:"POST",
 
-body:datos
+const resultadosBusqueda =
+document.getElementById(
+    "resultadosBusqueda"
+);
+
+
+const estadoBusqueda =
+document.getElementById(
+    "estadoBusqueda"
+);
+
+
+
+// ========================================================
+// ESCAPAR HTML
+// Evita interpretar contenido de la planilla como HTML
+// ========================================================
+
+
+function escaparHTML(valor){
+
+    return String(
+        valor ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
-);
 
-const j=await r.json();
 
-if(!j.ok){
+// ========================================================
+// MOSTRAR RESULTADOS
+// ========================================================
 
-throw Error();
+
+function mostrarResultados(
+    registros
+){
+
+
+    if(
+        !registros ||
+        registros.length === 0
+    ){
+
+        resultadosBusqueda.innerHTML =
+            '<div class="sinResultados">' +
+            'No se encontraron registros.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+
+    resultadosBusqueda.innerHTML =
+
+        '<div class="contador">' +
+
+        registros.length +
+
+        (
+            registros.length === 1
+            ? " registro encontrado"
+            : " registros encontrados"
+        ) +
+
+        '</div>' +
+
+
+        registros
+            .map(
+                r => `
+
+                <div class="registro">
+
+                    <div>
+
+                        <strong>
+                            ${escaparHTML(r.id)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="registroLinea">
+
+                        <strong>
+                            Fecha:
+                        </strong>
+
+                        ${escaparHTML(r.fecha)}
+
+                    </div>
+
+
+                    <div class="registroLinea">
+
+                        <strong>
+                            Hora:
+                        </strong>
+
+                        ${escaparHTML(r.hora)}
+
+                    </div>
+
+
+                    <div class="registroLinea">
+
+                        <strong>
+                            Paciente:
+                        </strong>
+
+                        ${escaparHTML(r.paciente)}
+
+                    </div>
+
+
+                    <div class="registroLinea">
+
+                        <strong>
+                            Médico:
+                        </strong>
+
+                        ${escaparHTML(r.medico)}
+
+                    </div>
+
+
+                    <div class="registroLinea">
+
+                        <strong>
+                            Solicita:
+                        </strong>
+
+                        ${escaparHTML(r.solicita)}
+
+                    </div>
+
+                </div>
+
+                `
+            )
+            .join("");
 
 }
 
-mostrarResultado(
 
-"exito",
 
-"Registro realizado"
+// ========================================================
+// BUSCAR REGISTROS
+// ========================================================
 
-);
 
-paciente.value="";
+async function buscarRegistros(){
 
-solicita.selectedIndex=0;
 
-setTimeout(()=>{
+    const parametros =
+        new URLSearchParams();
 
-paciente.focus();
 
-},100);
+    parametros.append(
+        "accion",
+        "buscar"
+    );
 
-}catch{
 
-mostrarResultado(
+    parametros.append(
+        "q",
+        busqueda.value.trim()
+    );
 
-"error",
 
-"No se pudo registrar."
+    parametros.append(
+        "medico",
+        filtroMedico.value
+    );
 
-);
+
+    parametros.append(
+        "solicita",
+        filtroSolicita.value
+    );
+
+
+    parametros.append(
+        "fecha",
+        filtroFecha.value
+    );
+
+
+
+    try{
+
+
+        botonBuscar.disabled =
+            true;
+
+
+        botonBuscar.textContent =
+            "Buscando...";
+
+
+        estadoBusqueda.className =
+            "resultado exito";
+
+
+        estadoBusqueda.textContent =
+            "Buscando registros...";
+
+
+        resultadosBusqueda.innerHTML =
+            "";
+
+
+
+        const respuesta =
+            await fetch(
+
+                URL_APPS_SCRIPT +
+                "?" +
+                parametros.toString()
+
+            );
+
+
+
+        if(!respuesta.ok){
+
+            throw new Error(
+                "HTTP " +
+                respuesta.status
+            );
+
+        }
+
+
+
+        const datos =
+            await respuesta.json();
+
+
+
+        if(!datos.ok){
+
+            throw new Error(
+                datos.mensaje ||
+                "Error de consulta"
+            );
+
+        }
+
+
+
+        const registros =
+            datos.registros || [];
+
+
+
+        mostrarResultados(
+            registros
+        );
+
+
+
+        estadoBusqueda.className =
+            "resultado exito";
+
+
+        estadoBusqueda.textContent =
+
+            registros.length === 0
+
+            ? "No se encontraron registros."
+
+            :
+
+            (
+                registros.length === 1
+
+                ? "1 registro encontrado."
+
+                :
+
+                registros.length +
+                " registros encontrados."
+            );
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Error de búsqueda:",
+            error
+        );
+
+
+        estadoBusqueda.className =
+            "resultado error";
+
+
+        estadoBusqueda.textContent =
+            "No se pudo realizar la búsqueda.";
+
+
+        resultadosBusqueda.innerHTML =
+            "";
+
+
+
+    }finally{
+
+
+        botonBuscar.disabled =
+            false;
+
+
+        botonBuscar.textContent =
+            "Buscar";
+
+    }
 
 }
 
-boton.disabled=false;
 
-boton.textContent="Registrar";
 
-}
+// ========================================================
+// BOTÓN BUSCAR
+// ========================================================
 
+
+botonBuscar.addEventListener(
+    "click",
+    buscarRegistros
+);
+
+
+
+// ========================================================
+// ENTER EN CAMPO DE BÚSQUEDA
+// ========================================================
+
+
+busqueda.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+        ){
+
+            e.preventDefault();
+
+            buscarRegistros();
+
+        }
+
+    }
+);
+
+
+
+// ========================================================
+// CAMBIO AUTOMÁTICO DE FILTROS
+// ========================================================
+
+
+[
+    filtroMedico,
+    filtroSolicita,
+    filtroFecha
+
+].forEach(
+
+    elemento => {
+
+        elemento.addEventListener(
+            "change",
+            buscarRegistros
+        );
+
+    }
+
+);
+
+
+
+// ========================================================
+// LIMPIAR FILTROS
+// ========================================================
+
+
+botonLimpiar.addEventListener(
+    "click",
+    function(){
+
+        busqueda.value =
+            "";
+
+        filtroMedico.value =
+            "";
+
+        filtroSolicita.value =
+            "";
+
+        filtroFecha.value =
+            "";
+
+
+        estadoBusqueda.className =
+            "resultado";
+
+
+        estadoBusqueda.textContent =
+            "";
+
+
+        resultadosBusqueda.innerHTML =
+            "";
+
+    }
 );
 
 </script>
 
 </body>
+
 </html>
