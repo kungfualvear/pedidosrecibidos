@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#111827">
+
+    <title>Registrar pedido</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #f3f4f6;
+            color: #111827;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            padding: 12px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* =========================
+           ENCABEZADO
+           ========================= */
+
+        .encabezado {
+            padding: 8px 4px 16px;
+        }
+
+        .titulo {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .subtitulo {
+            margin: 5px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* =========================
+           TARJETA
+           ========================= */
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* =========================
+           FECHA
+           ========================= */
+
+        .fecha {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+            padding: 11px 13px;
+
+            background: #f9fafb;
+            border-radius: 10px;
+
+            font-size: 14px;
+        }
+
+        .fecha-label {
+            color: #6b7280;
+        }
+
+        .fecha-valor {
+            font-weight: 600;
+        }
+
+        /* =========================
+           CAMPOS
+           ========================= */
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            display: block;
+
+            width: 100%;
+            height: 54px;
+
+            padding: 0 15px;
+
+            border: 2px solid #e5e7eb;
+            border-radius: 11px;
+
+            background: #ffffff;
+
+            color: #111827;
+
+            font-family: inherit;
+            font-size: 17px;
+
+            outline: none;
+
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #111827;
+        }
+
+        /* =========================
+           SELECT
+           ========================= */
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: "⌄";
+
+            position: absolute;
+            right: 16px;
+            top: 50%;
+
+            transform: translateY(-55%);
+
+            font-size: 22px;
+            color: #6b7280;
+
+            pointer-events: none;
+        }
+
+        select {
+            padding-right: 45px;
+        }
+
+        /* =========================
+           BOTÓN
+           ========================= */
+
+        button {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            min-height: 58px;
+
+            margin-top: 6px;
+
+            border: 0;
+            border-radius: 12px;
+
+            background: #111827;
+            color: #ffffff;
+
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            touch-action: manipulation;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* =========================
+           MENSAJE DE RESULTADO
+           ========================= */
+
+        .resultado {
+            display: none;
+
+            margin-top: 15px;
+            padding: 13px;
+
+            border-radius: 11px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .resultado.exito {
+            display: block;
+
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .resultado.error {
+            display: block;
+
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .resultado-id {
+            margin-top: 3px;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           ESTADO DE CARGA
+           ========================= */
+
+        .spinner {
+            width: 19px;
+            height: 19px;
+
+            margin-right: 9px;
+
+            border: 3px solid rgba(255,255,255,0.35);
+            border-top-color: #ffffff;
+
+            border-radius: 50%;
+
+            animation: girar 0.7s linear infinite;
+        }
+
+        @keyframes girar {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           PANTALLAS GRANDES
+           ========================= */
+
+        @media (min-width: 600px) {
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+
+                padding-top: 40px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="encabezado">
+
+        <h1 class="titulo">
+            Registrar pedido
+        </h1>
+
+        <p class="subtitulo">
+            Registre el pedido inmediatamente después de recibirlo.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <form id="formulario">
+
+            <!-- FECHA -->
+
+            <div class="fecha">
+
+                <span class="fecha-label">
+                    Fecha
+                </span>
+
+                <span
+                    id="fechaVisible"
+                    class="fecha-valor"
+                >
+                    —
+                </span>
+
+            </div>
+
+
+            <!-- PACIENTE -->
+
+            <div class="campo">
+
+                <label for="paciente">
+                    Paciente
+                </label>
+
+                <input
+                    type="text"
+                    id="paciente"
+                    name="paciente"
+                    placeholder="Apellido y Nombre"
+                    autocomplete="off"
+                    autocapitalize="words"
+                    spellcheck="false"
+                    enterkeyhint="next"
+                    required
+                >
+
+            </div>
+
+
+            <!-- SOLICITA -->
+
+            <div class="campo">
+
+                <label for="solicita">
+                    Solicita
+                </label>
+
+                <div class="select-wrapper">
+
+                    <select
+                        id="solicita"
+                        name="solicita"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccionar...
+                        </option>
+
+                        <option value="Receta">
+                            Receta
+                        </option>
+
+                        <option value="Pedido">
+                            Pedido
+                        </option>
+
+                        <option value="Receta y Pedido">
+                            Receta y Pedido
+                        </option>
+
+                        <option value="Empadronamiento">
+                            Empadronamiento
+                        </option>
+
+                        <option value="Receta y Empadronamiento">
+                            Receta y Empadronamiento
+                        </option>
+
+                        <option value="Otro">
+                            Otro
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <button
+                type="submit"
+                id="boton"
+            >
+                Registrar pedido
+            </button>
+
+        </form>
+
+
+        <!-- RESULTADO -->
+
+        <div
+            id="resultado"
+            class="resultado"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =====================================================
+    // CONFIGURACIÓN
+    // =====================================================
+
+    const URL_APPS_SCRIPT =
+        "https://script.google.com/macros/s/AKfycbx46ZfE083mZ7Pv9C53z-KnleGVEmca1dzR56uhhT6g4aE2wSzeIi5MPXXVLqGnAcmxrA/exec";
+
+
+    // =====================================================
+    // ELEMENTOS
+    // =====================================================
+
+    const formulario =
+        document.getElementById("formulario");
+
+    const paciente =
+        document.getElementById("paciente");
+
+    const solicita =
+        document.getElementById("solicita");
+
+    const boton =
+        document.getElementById("boton");
+
+    const resultado =
+        document.getElementById("resultado");
+
+    const fechaVisible =
+        document.getElementById("fechaVisible");
+
+
+    // =====================================================
+    // FECHA LOCAL
+    // =====================================================
+
+    function obtenerFechaLocal() {
+
+        const ahora = new Date();
+
+        const año =
+            ahora.getFullYear();
+
+        const mes =
+            String(
+                ahora.getMonth() + 1
+            ).padStart(2, "0");
+
+        const dia =
+            String(
+                ahora.getDate()
+            ).padStart(2, "0");
+
+        return `${año}-${mes}-${dia}`;
+    }
+
+
+    // =====================================================
+    // FORMATO FECHA PARA MOSTRAR
+    // =====================================================
+
+    function mostrarFecha() {
+
+        const fecha =
+            obtenerFechaLocal();
+
+        const partes =
+            fecha.split("-");
+
+        fechaVisible.textContent =
+            `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+
+    // =====================================================
+    // MOSTRAR RESULTADO
+    // =====================================================
+
+    function mostrarExito(id) {
+
+        resultado.className =
+            "resultado exito";
+
+        resultado.innerHTML =
+            `
+            Pedido registrado
+            <div class="resultado-id">
+                ${id}
+            </div>
+            `;
+    }
+
+
+    function mostrarError(mensaje) {
+
+        resultado.className =
+            "resultado error";
+
+        resultado.textContent =
+            mensaje;
+    }
+
+
+    function ocultarResultado() {
+
+        resultado.className =
+            "resultado";
+
+        resultado.innerHTML = "";
+    }
+
+
+    // =====================================================
+    // BOTÓN EN ESTADO "CARGANDO"
+    // =====================================================
+
+    function mostrarCargando() {
+
+        boton.disabled = true;
+
+        boton.innerHTML =
+            `
+            <span class="spinner"></span>
+            Registrando...
+            `;
+    }
+
+
+    function restaurarBoton() {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "Registrar pedido";
+    }
+
+
+    // =====================================================
+    // REGISTRO DEL PEDIDO
+    // =====================================================
+
+    formulario.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const nombre =
+                paciente.value.trim();
+
+            const tipo =
+                solicita.value;
+
+            const fecha =
+                obtenerFechaLocal();
+
+
+            // -----------------------------
+            // VALIDACIÓN
+            // -----------------------------
+
+            if (!nombre) {
+
+                mostrarError(
+                    "Ingrese el apellido y nombre del paciente."
+                );
+
+                paciente.focus();
+
+                return;
+            }
+
+
+            if (!tipo) {
+
+                mostrarError(
+                    "Seleccione qué solicita el paciente."
+                );
+
+                solicita.focus();
+
+                return;
+            }
+
+
+            // -----------------------------
+            // PREPARAR ENVÍO
+            // -----------------------------
+
+            ocultarResultado();
+
+            mostrarCargando();
+
+
+            try {
+
+                const datos =
+                    new URLSearchParams();
+
+                datos.append(
+                    "fecha",
+                    fecha
+                );
+
+                datos.append(
+                    "paciente",
+                    nombre
+                );
+
+                datos.append(
+                    "solicita",
+                    tipo
+                );
+
+
+                // -----------------------------
+                // ENVIAR A GOOGLE SHEETS
+                // -----------------------------
+
+                const respuesta =
+                    await fetch(
+                        URL_APPS_SCRIPT,
+                        {
+                            method: "POST",
+                            body: datos
+                        }
+                    );
+
+
+                const resultadoServidor =
+                    await respuesta.json();
+
+
+                // -----------------------------
+                // COMPROBAR RESULTADO
+                // -----------------------------
+
+                if (
+                    !resultadoServidor.ok
+                ) {
+
+                    throw new Error(
+                        resultadoServidor.mensaje ||
+                        "No se pudo registrar el pedido."
+                    );
+                }
+
+
+                // -----------------------------
+                // MOSTRAR ÉXITO
+                // -----------------------------
+
+                mostrarExito(
+                    resultadoServidor.id
+                );
+
+
+                // -----------------------------
+                // PREPARAR SIGUIENTE PEDIDO
+                // -----------------------------
+
+                paciente.value = "";
+
+                solicita.value = "";
+
+                restaurarBoton();
+
+
+                // Volver inmediatamente
+                // al campo paciente.
+
+                setTimeout(
+                    function() {
+
+                        paciente.focus();
+
+                    },
+                    100
+                );
+
+
+                // Ocultar confirmación
+                // después de unos segundos.
+
+                setTimeout(
+                    function() {
+
+                        ocultarResultado();
+
+                    },
+                    2500
+                );
+
+
+            } catch (error) {
+
+                mostrarError(
+                    "No se pudo registrar el pedido. " +
+                    "Verifique la conexión e intente nuevamente."
+                );
+
+                restaurarBoton();
+
+            }
+
+        }
+    );
+
+
+    // =====================================================
+    // INICIALIZACIÓN
+    // =====================================================
+
+    mostrarFecha();
+
+    setTimeout(
+        function() {
+
+            paciente.focus();
+
+        },
+        300
+    );
+
+</script>
+
+</body>
+</html>
