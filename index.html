@@ -327,6 +327,31 @@
 
         <form id="formulario">
 
+
+            <!-- MÉDICO -->
+
+            <div class="campo">
+                <label for="medico">
+                    Médico
+                </label>
+
+                <div class="select-wrapper">
+                    <select
+                        id="medico"
+                        name="medico"
+                        required
+                    >
+                        <option value="Dr. Bustos" selected>
+                            Dr. Bustos
+                        </option>
+
+                        <option value="Dr. Zalazar">
+                            Dr. Zalazar
+                        </option>
+                    </select>
+                </div>
+            </div>
+
             <!-- FECHA -->
 
             <div class="fecha">
@@ -460,6 +485,9 @@
     const formulario =
         document.getElementById("formulario");
 
+    const medico =
+        document.getElementById("medico");
+
     const paciente =
         document.getElementById("paciente");
 
@@ -474,6 +502,42 @@
 
     const fechaVisible =
         document.getElementById("fechaVisible");
+
+
+    // =====================================================
+    // MÉDICO SELECCIONADO
+    // =====================================================
+
+    const CLAVE_MEDICO = "medicoSeleccionado";
+
+    function cargarMedicoGuardado() {
+
+        const medicoGuardado =
+            localStorage.getItem(CLAVE_MEDICO);
+
+        if (
+            medicoGuardado === "Dr. Zalazar" ||
+            medicoGuardado === "Dr. Bustos"
+        ) {
+            medico.value = medicoGuardado;
+        } else {
+            medico.value = "Dr. Bustos";
+            localStorage.setItem(
+                CLAVE_MEDICO,
+                "Dr. Bustos"
+            );
+        }
+    }
+
+    medico.addEventListener(
+        "change",
+        function() {
+            localStorage.setItem(
+                CLAVE_MEDICO,
+                medico.value
+            );
+        }
+    );
 
 
     // =====================================================
@@ -591,6 +655,9 @@
 
             event.preventDefault();
 
+            const medicoSeleccionado =
+                medico.value;
+
             const nombre =
                 paciente.value.trim();
 
@@ -604,6 +671,17 @@
             // -----------------------------
             // VALIDACIÓN
             // -----------------------------
+
+            if (!medicoSeleccionado) {
+
+                mostrarError(
+                    "Seleccione el médico."
+                );
+
+                medico.focus();
+
+                return;
+            }
 
             if (!nombre) {
 
@@ -646,6 +724,11 @@
                 datos.append(
                     "fecha",
                     fecha
+                );
+
+                datos.append(
+                    "medico",
+                    medicoSeleccionado
                 );
 
                 datos.append(
@@ -758,6 +841,7 @@
     // =====================================================
 
     mostrarFecha();
+    cargarMedicoGuardado();
 
     setTimeout(
         function() {
