@@ -5,92 +5,117 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Recetas/Pedidos Recibidos</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
+/* =====================================================
+   TOKENS — colores planos (hex/rgba), sin oklch,
+   para que el modo oscuro funcione en cualquier motor.
+   ===================================================== */
+
 :root{
-    --bg:#f3f4f6;
-    --texto:#111827;
-    --texto-suave:#4B5563;
+
+    --bg:#ffffff;
     --card-bg:#ffffff;
-    --borde:#E5E7EB;
-    --input-bg:#ffffff;
-    --primario:#111827;
-    --primario-texto:#ffffff;
-    --secundario-bg:#ffffff;
-    --secundario-texto:#111827;
-    --secundario-hover:#F9FAFB;
-    --registro-bg:#F9FAFB;
-    --sinresultados-color:#6B7280;
-    --contador-color:#374151;
-    --exito-bg:#ECFDF5;
-    --exito-color:#065F46;
-    --error-bg:#FEF2F2;
-    --error-color:#991B1B;
-    --sombra:rgba(0,0,0,.08);
-    --observacion-bg:#FFFBEB;
-    --observacion-color:#92400E;
-    --observacion-borde:#FDE68A;
-    --icono-color:#6B7280;
+    --hover-bg:#f7f7f8;
+
+    --texto:#0a0a0a;
+    --texto-suave:#6b7280;
+    --texto-tenue:#9ca3af;
+
+    --borde:#e5e7eb;
+    --borde-fuerte:#d4d4d8;
+
+    --icono-color:#111827;
+    --icono-color-suave:#6b7280;
+
+    --exito-bg:#ecfdf5;
+    --exito-color:#065f46;
+    --exito-borde:#a7f3d0;
+
+    --error-bg:#fef2f2;
+    --error-color:#991b1b;
+    --error-borde:#fecaca;
+
+    --nota-bg:#fffbeb;
+    --nota-color:#92400e;
+    --nota-borde:#fde68a;
+
+    --radius:1.1rem;
+    --sombra:0 1px 2px rgba(15,15,15,.04), 0 8px 20px -10px rgba(15,15,15,.10);
+
+    --fuente-display:'Sora',system-ui,sans-serif;
+    --fuente-cuerpo:'Plus Jakarta Sans',system-ui,sans-serif;
 }
 
 body.dark{
-    --bg:#0d0f13;
-    --texto:#F3F4F6;
-    --texto-suave:#9CA3AF;
-    --card-bg:#181b21;
-    --borde:#2b2f38;
-    --input-bg:#20232b;
-    --primario:#F3F4F6;
-    --primario-texto:#111827;
-    --secundario-bg:#181b21;
-    --secundario-texto:#F3F4F6;
-    --secundario-hover:#20232b;
-    --registro-bg:#1f2229;
-    --sinresultados-color:#9CA3AF;
-    --contador-color:#D1D5DB;
-    --exito-bg:#052e21;
-    --exito-color:#6EE7B7;
-    --error-bg:#3b0a0a;
-    --error-color:#FCA5A5;
-    --sombra:rgba(0,0,0,.5);
-    --observacion-bg:#2a2110;
-    --observacion-color:#FCD34D;
-    --observacion-borde:#78350f;
-    --icono-color:#9CA3AF;
+
+    --bg:#0a0a0b;
+    --card-bg:#141416;
+    --hover-bg:#1c1c1f;
+
+    --texto:#f5f5f6;
+    --texto-suave:#a1a1aa;
+    --texto-tenue:#71717a;
+
+    --borde:#27272a;
+    --borde-fuerte:#3f3f46;
+
+    --icono-color:#e5e7eb;
+    --icono-color-suave:#a1a1aa;
+
+    --exito-bg:#0d2a20;
+    --exito-color:#6ee7b7;
+    --exito-borde:#065f46;
+
+    --error-bg:#2c1212;
+    --error-color:#fca5a5;
+    --error-borde:#7f1d1d;
+
+    --nota-bg:#2a2110;
+    --nota-color:#fcd34d;
+    --nota-borde:#78350f;
+
+    --sombra:0 1px 2px rgba(0,0,0,.3), 0 12px 28px -12px rgba(0,0,0,.55);
 }
+
+/* =====================================================
+   BASE
+   ===================================================== */
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
 body{
+    font-family:var(--fuente-cuerpo);
     background:var(--bg);
     color:var(--texto);
     padding:20px;
     padding-top:76px;
-    transition:background .2s ease,color .2s ease;
+    min-height:100vh;
+    transition:background-color .2s ease,color .2s ease;
 }
 
 .app{
-    max-width:520px;
+    max-width:480px;
     margin:auto;
 }
 
-.card{
-    background:var(--card-bg);
-    border-radius:18px;
-    padding:22px;
-    box-shadow:0 3px 12px var(--sombra);
-    transition:background .2s ease,box-shadow .2s ease;
-}
-
-h1{
-    font-size:27px;
-    margin-bottom:22px;
-    text-align:center;
+.icon{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
 .screen{
@@ -102,7 +127,7 @@ h1{
 }
 
 /* =====================================================
-   BOTÓN MODO OSCURO
+   TOGGLE DE TEMA
    ===================================================== */
 
 .temaToggle{
@@ -112,214 +137,396 @@ h1{
     width:44px;
     height:44px;
     border-radius:50%;
-    border:2px solid var(--borde);
+    border:1.5px solid var(--borde-fuerte);
     background:var(--card-bg);
-    color:var(--texto);
+    color:var(--icono-color);
     display:flex;
     align-items:center;
     justify-content:center;
     cursor:pointer;
-    font-size:19px;
-    box-shadow:0 3px 10px var(--sombra);
+    box-shadow:var(--sombra);
     z-index:1000;
-    transition:background .2s ease,transform .15s ease;
+    transition:background .2s ease,border-color .2s ease,transform .15s ease;
 }
 
 .temaToggle:hover{
     transform:scale(1.06);
+    border-color:var(--texto-suave);
+}
+
+.temaToggle .icon{
+    width:19px;
+    height:19px;
+}
+
+/* =====================================================
+   PANTALLA INICIO
+   ===================================================== */
+
+.encabezadoInicio{
+    text-align:center;
+    margin-bottom:24px;
+}
+
+h1{
+    font-family:var(--fuente-display);
+    font-weight:800;
+    letter-spacing:-0.02em;
+    color:var(--texto);
+}
+
+.tituloInicio{
+    font-size:33px;
+    line-height:1.15;
+    margin-bottom:14px;
+}
+
+.subtituloInicio{
+    font-family:var(--fuente-cuerpo);
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--texto-suave);
+    max-width:340px;
+    margin:0 auto 30px;
 }
 
 .menuButton{
     width:100%;
-    height:64px;
-    border:none;
-    border-radius:12px;
-    background:var(--primario);
-    color:var(--primario-texto);
-    font-size:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-align:left;
+    border:1.5px solid var(--borde);
+    background:var(--card-bg);
+    border-radius:18px;
+    padding:18px 18px;
+    cursor:pointer;
+    margin-bottom:14px;
+    transition:border-color .15s ease,background .15s ease,transform .12s ease;
+}
+
+.menuButton:last-child{
+    margin-bottom:0;
+}
+
+.menuButton:hover{
+    border-color:var(--borde-fuerte);
+    background:var(--hover-bg);
+    transform:translateY(-1px);
+}
+
+.menuButton .iconoCaja{
+    width:46px;
+    height:46px;
+    flex-shrink:0;
+    border:1.5px solid var(--borde);
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--icono-color);
+    background:var(--bg);
+}
+
+.menuButton .iconoCaja .icon{
+    width:21px;
+    height:21px;
+}
+
+.menuButton .menuTextos{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+
+.menuButton .menuTitulo{
+    font-family:var(--fuente-display);
     font-weight:700;
-    cursor:pointer;
-    margin-bottom:18px;
-}
-
-.back{
-    background:none;
-    border:none;
-    color:var(--texto);
-    font-size:15px;
-    cursor:pointer;
-    margin-bottom:20px;
-}
-
-.campo{
-    margin-bottom:18px;
-}
-
-label{
-    display:block;
-    margin-bottom:7px;
-    font-weight:600;
-}
-
-input,
-select{
-    width:100%;
-    height:54px;
-    border:2px solid var(--borde);
-    background:var(--input-bg);
-    color:var(--texto);
-    border-radius:11px;
-    padding:0 14px;
-    font-size:17px;
-}
-
-input:focus,
-select:focus{
-    outline:none;
-    border-color:var(--primario);
-}
-
-.submit{
-    width:100%;
-    height:58px;
-    background:var(--primario);
-    color:var(--primario-texto);
-    border:none;
-    border-radius:12px;
-    font-size:18px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.submit:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-}
-
-.resultado{
-    margin-top:18px;
-    display:none;
-    padding:14px;
-    border-radius:10px;
-    text-align:center;
-}
-
-.exito{
-    display:block;
-    background:var(--exito-bg);
-    color:var(--exito-color);
-}
-
-.error{
-    display:block;
-    background:var(--error-bg);
-    color:var(--error-color);
-}
-
-/* =====================================================
-   RESULTADOS DE CONSULTA
-   ===================================================== */
-
-.registro{
-    border:1px solid var(--borde);
-    border-radius:12px;
-    padding:14px;
-    margin-bottom:12px;
-    background:var(--registro-bg);
-}
-
-.registro strong{
+    font-size:15.5px;
     color:var(--texto);
 }
 
-.registroLinea{
-    margin-top:5px;
-    font-size:14px;
+.menuButton .menuSubtitulo{
+    font-size:12.5px;
     color:var(--texto-suave);
 }
 
-.registroCabecera{
+/* =====================================================
+   ENCABEZADO DE PÁGINA (Carga / Consulta)
+   ===================================================== */
+
+.back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:none;
+    color:var(--texto-suave);
+    font-family:var(--fuente-cuerpo);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-bottom:18px;
+    padding:2px;
+    transition:color .15s ease;
+}
+
+.back:hover{
+    color:var(--texto);
+}
+
+.tituloPagina{
+    font-size:26px;
+    margin-bottom:20px;
+}
+
+/* =====================================================
+   TARJETA CONTENEDORA
+   ===================================================== */
+
+.card{
+    background:var(--card-bg);
+    border:1.5px solid var(--borde);
+    border-radius:var(--radius);
+    padding:24px 22px;
+    box-shadow:var(--sombra);
+    transition:background .2s ease,border-color .2s ease;
+}
+
+/* =====================================================
+   CAMPOS DE FORMULARIO
+   ===================================================== */
+
+.campo{
+    margin-bottom:20px;
+}
+
+.campo:last-of-type{
+    margin-bottom:0;
+}
+
+.filaDoble{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.campoLabel{
     display:flex;
-    align-items:flex-start;
+    align-items:center;
+    gap:7px;
+    margin-bottom:9px;
+}
+
+.campoLabel .icon{
+    width:15px;
+    height:15px;
+    color:var(--icono-color-suave);
+}
+
+.campoLabel span{
+    font-family:var(--fuente-cuerpo);
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--texto-suave);
+}
+
+.campoLabelFila{
+    display:flex;
+    align-items:center;
     justify-content:space-between;
     gap:10px;
 }
 
-.registroCabecera .registroLinea{
-    margin-top:0;
+input,
+select,
+textarea{
+    width:100%;
+    border:1.5px solid var(--borde);
+    background:var(--bg);
+    color:var(--texto);
+    border-radius:12px;
+    font-family:var(--fuente-cuerpo);
+    font-size:15.5px;
+    transition:border-color .15s ease,box-shadow .15s ease;
 }
 
-.sinResultados{
-    padding:18px;
-    text-align:center;
-    color:var(--sinresultados-color);
-    background:var(--registro-bg);
-    border-radius:12px;
+input,
+select{
+    height:50px;
+    padding:0 15px;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:var(--texto-tenue);
+}
+
+.selectWrap{
+    position:relative;
+}
+
+select{
+    appearance:none;
+    -webkit-appearance:none;
+    padding-right:38px;
+    cursor:pointer;
+}
+
+.selectWrap .icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:17px;
+    height:17px;
+    color:var(--icono-color-suave);
+    pointer-events:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--texto-suave);
+    box-shadow:0 0 0 3px rgba(0,0,0,.06);
+}
+
+body.dark input:focus,
+body.dark select:focus,
+body.dark textarea:focus{
+    box-shadow:0 0 0 3px rgba(255,255,255,.07);
+}
+
+input[type="date"]{
+    color-scheme:light;
+}
+
+body.dark input[type="date"]{
+    color-scheme:dark;
+}
+
+/* =====================================================
+   BOTONES
+   ===================================================== */
+
+.submit{
+    width:100%;
+    height:52px;
+    margin-top:22px;
+    background:none;
+    border:none;
+    border-radius:14px;
+    color:var(--texto);
+    font-family:var(--fuente-display);
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,opacity .15s ease;
+}
+
+.submit:hover:not(:disabled){
+    background:var(--hover-bg);
+}
+
+.submit:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.botonSecundario{
+    width:100%;
+    height:50px;
+    margin-top:12px;
+    background:none;
+    color:var(--texto-suave);
+    border:1.5px solid var(--borde);
+    border-radius:14px;
+    font-family:var(--fuente-cuerpo);
+    font-size:14.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+}
+
+.botonSecundario:hover{
+    background:var(--hover-bg);
+    border-color:var(--borde-fuerte);
+    color:var(--texto);
+}
+
+.pildoraBtn{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    border:1.5px solid var(--borde-fuerte);
+    background:none;
+    color:var(--texto);
+    font-family:var(--fuente-cuerpo);
+    font-weight:700;
+    font-size:12.5px;
+    padding:7px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+    flex-shrink:0;
+}
+
+.pildoraBtn:hover{
+    background:var(--hover-bg);
+}
+
+.pildoraBtn .icon{
+    width:13px;
+    height:13px;
+}
+
+.iconBtnRedondo{
+    width:34px;
+    height:34px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1.5px solid var(--borde-fuerte);
+    background:none;
+    color:var(--icono-color);
+    border-radius:50%;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+
+.iconBtnRedondo:hover{
+    background:var(--hover-bg);
+}
+
+.iconBtnRedondo .icon{
+    width:15px;
+    height:15px;
 }
 
 /* =====================================================
    OBSERVACIÓN
    ===================================================== */
 
-.btnObservacion{
-    border:none;
-    background:none;
-    cursor:pointer;
-    font-size:18px;
-    line-height:1;
-    color:var(--icono-color);
-    padding:4px 6px;
-    border-radius:8px;
-    flex-shrink:0;
-}
-
-.btnObservacion:hover{
-    background:var(--secundario-hover);
-}
-
-.observacionTexto{
-    margin-top:8px;
-    padding:10px 12px;
-    background:var(--observacion-bg);
-    color:var(--observacion-color);
-    border:1px solid var(--observacion-borde);
-    border-radius:8px;
-    font-size:14px;
-    white-space:pre-wrap;
-}
-
 .formObservacion{
     display:none;
-    margin-top:10px;
+    margin-top:12px;
 }
 
 .formObservacion.activo{
     display:block;
 }
 
-.campoObservacionCabecera{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:7px;
-}
-
-.campoObservacionCabecera label{
-    margin-bottom:0;
-}
-
-.formObservacion textarea{
+.formObservacion textarea,
+.inputObservacion{
     width:100%;
-    min-height:70px;
+    min-height:76px;
     height:auto;
-    border:2px solid var(--borde);
-    background:var(--input-bg);
-    color:var(--texto);
-    border-radius:10px;
-    padding:10px;
-    font-size:14px;
-    font-family:inherit;
+    padding:11px 13px;
+    font-size:14.5px;
     resize:vertical;
 }
 
@@ -331,73 +538,207 @@ select:focus{
 
 .formObservacionBotones button{
     flex:1;
-    height:40px;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:600;
+    height:42px;
+    border-radius:11px;
+    font-family:var(--fuente-cuerpo);
+    font-size:13.5px;
+    font-weight:700;
     cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
 }
 
 .btnGuardarObs{
-    border:none;
-    background:var(--primario);
-    color:var(--primario-texto);
+    border:1.5px solid var(--texto);
+    background:var(--texto);
+    color:var(--bg);
+}
+
+.btnGuardarObs:hover:not(:disabled){
+    opacity:.85;
 }
 
 .btnCancelarObs{
-    background:var(--secundario-bg);
-    color:var(--secundario-texto);
-    border:2px solid var(--borde);
+    background:none;
+    color:var(--texto-suave);
+    border:1.5px solid var(--borde);
+}
+
+.btnCancelarObs:hover{
+    background:var(--hover-bg);
+}
+
+.observacionTexto{
+    margin-top:10px;
+    padding:11px 13px;
+    background:var(--nota-bg);
+    color:var(--nota-color);
+    border:1px solid var(--nota-borde);
+    border-radius:10px;
+    font-size:13.5px;
+    line-height:1.45;
+    white-space:pre-wrap;
 }
 
 /* =====================================================
-   SEPARADOR
+   MENSAJES DE ESTADO
    ===================================================== */
 
-.separador{
-    height:1px;
-    background:var(--borde);
-    margin:20px 0;
+.resultado{
+    margin-top:16px;
+    display:none;
+    padding:13px 16px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    font-size:14px;
+    border:1px solid transparent;
+}
+
+.exito{
+    display:block;
+    background:var(--exito-bg);
+    color:var(--exito-color);
+    border-color:var(--exito-borde);
+}
+
+.error{
+    display:block;
+    background:var(--error-bg);
+    color:var(--error-color);
+    border-color:var(--error-borde);
 }
 
 /* =====================================================
-   CONTADOR DE RESULTADOS
+   RESULTADOS DE CONSULTA
    ===================================================== */
 
 .contador{
-    font-size:14px;
-    font-weight:600;
+    font-family:var(--fuente-cuerpo);
+    font-size:13px;
+    font-weight:700;
     margin-bottom:12px;
-    color:var(--contador-color);
+    color:var(--texto-suave);
     text-align:center;
 }
 
-/* =====================================================
-   BOTÓN LIMPIAR
-   ===================================================== */
-
-.botonSecundario{
-    width:100%;
-    height:50px;
-    background:var(--secundario-bg);
-    color:var(--secundario-texto);
-    border:2px solid var(--borde);
-    border-radius:11px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    margin-top:10px;
+.registro{
+    border:1.5px solid var(--borde);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
+    background:var(--card-bg);
+    transition:border-color .15s ease;
 }
 
-.botonSecundario:hover{
-    background:var(--secundario-hover);
+.registro:hover{
+    border-color:var(--borde-fuerte);
+}
+
+.registro strong{
+    color:var(--texto);
+    font-weight:600;
+}
+
+.registroLinea{
+    margin-top:7px;
+    font-size:14px;
+    color:var(--texto-suave);
+}
+
+.registroCabecera{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.registroCabecera .registroLinea{
+    margin-top:0;
+}
+
+.id-mono{
+    font-variant-numeric:tabular-nums;
+    color:var(--texto-tenue);
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.02em;
+}
+
+.badge{
+    display:inline-block;
+    font-family:var(--fuente-cuerpo);
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 11px;
+    border-radius:999px;
+    border:1.5px solid var(--borde-fuerte);
+    color:var(--texto);
+    background:none;
+}
+
+.sinResultados{
+    padding:30px 18px;
+    text-align:center;
+    color:var(--texto-tenue);
+    background:var(--card-bg);
+    border:1.5px dashed var(--borde-fuerte);
+    border-radius:16px;
+    font-size:14px;
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce){
+    *{
+        transition:none !important;
+    }
+}
+
+:focus-visible{
+    outline:2px solid var(--texto);
+    outline-offset:2px;
 }
 
 </style>
 </head>
 <body>
 
-<button id="temaToggle" class="temaToggle" type="button" title="Cambiar a modo oscuro">🌙</button>
+<!-- =====================================================
+     SPRITE DE ÍCONOS (definidos una sola vez, reutilizados con <use>)
+     ===================================================== -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+
+<symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></symbol>
+<symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+
+<symbol id="ic-stethoscope" viewBox="0 0 24 24"><circle cx="7" cy="4" r="1.4"/><circle cx="13" cy="4" r="1.4"/><path d="M7 5.4v3.1a3 3 0 0 0 6 0V5.4"/><path d="M10 11v3.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="19" cy="17.3" r="2.3"/></symbol>
+
+<symbol id="ic-file-plus" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M13 2v6h6"/><path d="M12 12v6M9 15h6"/></symbol>
+
+<symbol id="ic-clipboard-list" viewBox="0 0 24 24"><path d="M9 2h6a1 1 0 0 1 1 1v1.5H8V3a1 1 0 0 1 1-1Z"/><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10.5h6M9 14h6M9 17.5h3.5"/></symbol>
+
+<symbol id="ic-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="ic-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+
+<symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+
+<symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
+
+<symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/></symbol>
+
+<symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+
+</defs>
+</svg>
+
+<button id="temaToggle" class="temaToggle" type="button" title="Cambiar a modo oscuro"><svg class="icon"><use href="#ic-moon"/></svg></button>
 
 <div class="app">
 
@@ -406,14 +747,29 @@ select:focus{
      ===================================================== -->
 
 <section id="inicio" class="screen active">
-<div class="card">
+<div class="encabezadoInicio">
 
-<h1>Recetas/Pedidos Recibidos</h1>
-
-<button id="abrirCarga" class="menuButton">Cargar registros</button>
-<button id="abrirConsulta" class="menuButton">Consultar registros</button>
+<h1 class="tituloInicio">Recetas y Pedidos Recibidos</h1>
+<p class="subtituloInicio">Registrá los pedidos de los pacientes y consultá el historial en segundos.</p>
 
 </div>
+
+<button id="abrirCarga" class="menuButton" type="button">
+<span class="iconoCaja"><svg class="icon"><use href="#ic-file-plus"/></svg></span>
+<span class="menuTextos">
+<span class="menuTitulo">Cargar registros</span>
+<span class="menuSubtitulo">Nuevo pedido o receta de un paciente</span>
+</span>
+</button>
+
+<button id="abrirConsulta" class="menuButton" type="button">
+<span class="iconoCaja"><svg class="icon"><use href="#ic-clipboard-list"/></svg></span>
+<span class="menuTextos">
+<span class="menuTitulo">Consultar registros</span>
+<span class="menuSubtitulo">Buscar por paciente, médico o fecha</span>
+</span>
+</button>
+
 </section>
 
 <!-- =====================================================
@@ -421,32 +777,36 @@ select:focus{
      ===================================================== -->
 
 <section id="pantallaCarga" class="screen">
+
+<button class="back" id="volverInicio1" type="button"><svg class="icon" style="width:15px;height:15px"><use href="#ic-arrow-left"/></svg> Inicio</button>
+
+<h1 class="tituloPagina">Cargar registro</h1>
+
 <div class="card">
-
-<button class="back" id="volverInicio1">← Inicio</button>
-
-<h1>Recetas/Pedidos Recibidos</h1>
-
 <form id="formulario">
 
 <!-- MÉDICO -->
 <div class="campo">
-<label>Médico</label>
+<div class="campoLabel"><svg class="icon"><use href="#ic-stethoscope"/></svg><span>Médico</span></div>
+<div class="selectWrap">
 <select id="medico" required>
 <option selected>Dr. Bustos</option>
 <option>Dr. Zalazar</option>
 </select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
 </div>
 
 <!-- PACIENTE -->
 <div class="campo">
-<label>Paciente</label>
-<input id="paciente" autocomplete="off" required>
+<div class="campoLabel"><svg class="icon"><use href="#ic-user"/></svg><span>Paciente</span></div>
+<input id="paciente" autocomplete="off" placeholder="Apellido y nombre" required>
 </div>
 
 <!-- SOLICITA -->
 <div class="campo">
-<label>Solicita</label>
+<div class="campoLabel"><svg class="icon"><use href="#ic-clipboard-list"/></svg><span>Solicita</span></div>
+<div class="selectWrap">
 <select id="solicita" required>
 <option selected>Receta</option>
 <option>Pedido</option>
@@ -460,13 +820,15 @@ select:focus{
 <option>Laboratorio</option>
 <option>Otro</option>
 </select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
 </div>
 
 <!-- OBSERVACIÓN -->
 <div class="campo">
-<div class="campoObservacionCabecera">
-<label>Observación</label>
-<button type="button" class="btnObservacion" id="btnToggleObsCarga" title="Agregar observación">📝</button>
+<div class="campoLabelFila">
+<div class="campoLabel"><svg class="icon"><use href="#ic-pencil"/></svg><span>Observación</span></div>
+<button type="button" class="pildoraBtn" id="btnToggleObsCarga"><svg class="icon"><use href="#ic-plus"/></svg><span id="btnToggleObsCargaTexto">Agregar</span></button>
 </div>
 <div class="formObservacion" id="formObservacionCarga">
 <textarea id="observacionCarga" class="inputObservacion" placeholder="Escribí una observación..."></textarea>
@@ -478,8 +840,8 @@ select:focus{
 <div id="resultado" class="resultado"></div>
 
 </form>
-
 </div>
+
 </section>
 
 <!-- =====================================================
@@ -487,31 +849,37 @@ select:focus{
      ===================================================== -->
 
 <section id="pantallaConsulta" class="screen">
+
+<button class="back" id="volverInicio2" type="button"><svg class="icon" style="width:15px;height:15px"><use href="#ic-arrow-left"/></svg> Inicio</button>
+
+<h1 class="tituloPagina">Consultar registros</h1>
+
 <div class="card">
-
-<button class="back" id="volverInicio2">← Inicio</button>
-
-<h1>Consultar registros</h1>
 
 <!-- BÚSQUEDA GENERAL -->
 <div class="campo">
-<label>Buscar</label>
+<div class="campoLabel"><svg class="icon"><use href="#ic-search"/></svg><span>Buscar</span></div>
 <input id="busqueda" type="search" placeholder="Paciente, ID, médico..." autocomplete="off">
 </div>
 
-<!-- FILTRO MÉDICO -->
-<div class="campo">
-<label>Médico</label>
+<!-- FILTROS MÉDICO / SOLICITA -->
+<div class="campo filaDoble">
+
+<div>
+<div class="campoLabel"><svg class="icon"><use href="#ic-stethoscope"/></svg><span>Médico</span></div>
+<div class="selectWrap">
 <select id="filtroMedico">
 <option value="">Todos</option>
 <option>Dr. Bustos</option>
 <option>Dr. Zalazar</option>
 </select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
 </div>
 
-<!-- FILTRO SOLICITA -->
-<div class="campo">
-<label>Solicita</label>
+<div>
+<div class="campoLabel"><svg class="icon"><use href="#ic-clipboard-list"/></svg><span>Solicita</span></div>
+<div class="selectWrap">
 <select id="filtroSolicita">
 <option value="">Todos</option>
 <option>Receta</option>
@@ -521,25 +889,27 @@ select:focus{
 <option>Receta y Empadronamiento</option>
 <option>Otro</option>
 </select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
+</div>
+
 </div>
 
 <!-- FILTRO FECHA -->
 <div class="campo">
-<label>Fecha</label>
+<div class="campoLabel"><svg class="icon"><use href="#ic-calendar"/></svg><span>Fecha</span></div>
 <input id="filtroFecha" type="date">
 </div>
 
-<!-- BOTÓN BUSCAR -->
 <button class="submit" id="botonBuscar" type="button">Buscar</button>
-
-<!-- BOTÓN LIMPIAR -->
 <button class="botonSecundario" id="botonLimpiar" type="button">Limpiar filtros</button>
 
 <div id="estadoBusqueda" class="resultado"></div>
 
-<div id="resultadosBusqueda" style="margin-top:18px;"></div>
-
 </div>
+
+<div id="resultadosBusqueda" style="margin-top:16px;"></div>
+
 </section>
 
 </div>
@@ -571,10 +941,11 @@ const paciente = document.getElementById("paciente");
 const solicita = document.getElementById("solicita");
 const boton = document.getElementById("boton");
 const resultado = document.getElementById("resultado");
+const temaToggle = document.getElementById("temaToggle");
 const btnToggleObsCarga = document.getElementById("btnToggleObsCarga");
+const btnToggleObsCargaTexto = document.getElementById("btnToggleObsCargaTexto");
 const formObservacionCarga = document.getElementById("formObservacionCarga");
 const observacionCarga = document.getElementById("observacionCarga");
-const temaToggle = document.getElementById("temaToggle");
 
 // ========================================================
 // FUNCIÓN CAMBIO DE PANTALLA
@@ -607,25 +978,15 @@ volverInicio2.onclick = () => {
 };
 
 // ========================================================
-// OBSERVACIÓN EN FORMULARIO DE CARGA
-// ========================================================
-
-btnToggleObsCarga.addEventListener("click", function(){
-    formObservacionCarga.classList.toggle("activo");
-    if(formObservacionCarga.classList.contains("activo")){
-        observacionCarga.focus();
-    }
-});
-
-// ========================================================
 // MODO OSCURO
 // ========================================================
 
 const CLAVE_TEMA = "temaSeleccionado";
+const iconoTemaToggle = temaToggle.querySelector("use");
 
 function actualizarIconoTema(){
     const esOscuro = document.body.classList.contains("dark");
-    temaToggle.textContent = esOscuro ? "☀️" : "🌙";
+    iconoTemaToggle.setAttribute("href", esOscuro ? "#ic-sun" : "#ic-moon");
     temaToggle.title = esOscuro ? "Cambiar a modo claro" : "Cambiar a modo oscuro";
 }
 
@@ -643,6 +1004,19 @@ temaToggle.onclick = () => {
     );
     actualizarIconoTema();
 };
+
+// ========================================================
+// OBSERVACIÓN EN FORMULARIO DE CARGA
+// ========================================================
+
+btnToggleObsCarga.addEventListener("click", function(){
+    formObservacionCarga.classList.toggle("activo");
+    const abierto = formObservacionCarga.classList.contains("activo");
+    btnToggleObsCargaTexto.textContent = abierto ? "Quitar" : "Agregar";
+    if(abierto){
+        observacionCarga.focus();
+    }
+});
 
 // ========================================================
 // MÉDICO SELECCIONADO
@@ -757,6 +1131,7 @@ formulario.addEventListener("submit", async function(e){
         solicita.selectedIndex = 0;
         observacionCarga.value = "";
         formObservacionCarga.classList.remove("activo");
+        btnToggleObsCargaTexto.textContent = "Agregar";
 
         setTimeout(() => { paciente.focus(); }, 100);
 
@@ -828,20 +1203,20 @@ function mostrarResultados(registros){
             const solicitaSegura = escaparHTML(r.solicita);
             const observacionSegura = escaparHTML(r.observacion || "");
             const tieneObservacion = observacionSegura.trim().length > 0;
+            const iconoObs = tieneObservacion ? "#ic-pencil" : "#ic-plus";
 
             return `
                 <div class="registro" data-id="${idSeguro}">
 
                     <div class="registroCabecera">
-                        <div class="registroLinea"><strong>ID:</strong> ${idSeguro}</div>
-                        <button type="button" class="btnObservacion" data-accion="toggleObs" title="${tieneObservacion ? "Editar observación" : "Agregar observación"}">${tieneObservacion ? "✏️" : "📝"}</button>
+                        <div class="registroLinea id-mono">ID ${idSeguro}</div>
+                        <button type="button" class="iconBtnRedondo" data-accion="toggleObs" title="${tieneObservacion ? "Editar observación" : "Agregar observación"}"><svg class="icon"><use href="${iconoObs}"/></svg></button>
                     </div>
 
-                    <div class="registroLinea"><strong>Fecha:</strong> ${fechaSegura}</div>
-                    <div class="registroLinea"><strong>Hora:</strong> ${horaSegura}</div>
+                    <div class="registroLinea"><strong>Fecha:</strong> ${fechaSegura} · ${horaSegura}</div>
                     <div class="registroLinea"><strong>Paciente:</strong> ${pacienteSeguro}</div>
                     <div class="registroLinea"><strong>Médico:</strong> ${medicoSeguro}</div>
-                    <div class="registroLinea"><strong>Solicita:</strong> ${solicitaSegura}</div>
+                    <div class="registroLinea"><span class="badge">${solicitaSegura}</span></div>
 
                     <div class="bloqueObservacion">
                         ${tieneObservacion ? `<div class="observacionTexto"><strong>Observación:</strong> ${observacionSegura}</div>` : ""}
@@ -922,9 +1297,11 @@ resultadosBusqueda.addEventListener("click", async function(e){
                 ? `<div class="observacionTexto"><strong>Observación:</strong> ${escaparHTML(texto)}</div>`
                 : "";
 
-            const botonToggleTarjeta = tarjeta.querySelector('[data-accion="toggleObs"]');
-            botonToggleTarjeta.textContent = texto ? "✏️" : "📝";
-            botonToggleTarjeta.title = texto ? "Editar observación" : "Agregar observación";
+            const botonToggleTarjeta = tarjeta.querySelector('[data-accion="toggleObs"] use');
+            botonToggleTarjeta.setAttribute("href", texto ? "#ic-pencil" : "#ic-plus");
+
+            const botonToggleTitulo = tarjeta.querySelector('[data-accion="toggleObs"]');
+            botonToggleTitulo.title = texto ? "Editar observación" : "Agregar observación";
 
             tarjeta.querySelector(".formObservacion").classList.remove("activo");
 
@@ -1057,4 +1434,3 @@ botonLimpiar.addEventListener("click", function(){
 
 </body>
 </html>
-
