@@ -297,6 +297,18 @@ select:focus{
     display:block;
 }
 
+.campoObservacionCabecera{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:7px;
+}
+
+.campoObservacionCabecera label{
+    margin-bottom:0;
+}
+
 .formObservacion textarea{
     width:100%;
     min-height:70px;
@@ -450,6 +462,17 @@ select:focus{
 </select>
 </div>
 
+<!-- OBSERVACIÓN -->
+<div class="campo">
+<div class="campoObservacionCabecera">
+<label>Observación</label>
+<button type="button" class="btnObservacion" id="btnToggleObsCarga" title="Agregar observación">📝</button>
+</div>
+<div class="formObservacion" id="formObservacionCarga">
+<textarea id="observacionCarga" class="inputObservacion" placeholder="Escribí una observación..."></textarea>
+</div>
+</div>
+
 <button class="submit" id="boton" type="submit">Registrar</button>
 
 <div id="resultado" class="resultado"></div>
@@ -548,6 +571,9 @@ const paciente = document.getElementById("paciente");
 const solicita = document.getElementById("solicita");
 const boton = document.getElementById("boton");
 const resultado = document.getElementById("resultado");
+const btnToggleObsCarga = document.getElementById("btnToggleObsCarga");
+const formObservacionCarga = document.getElementById("formObservacionCarga");
+const observacionCarga = document.getElementById("observacionCarga");
 const temaToggle = document.getElementById("temaToggle");
 
 // ========================================================
@@ -579,6 +605,17 @@ volverInicio1.onclick = () => {
 volverInicio2.onclick = () => {
     abrir("inicio");
 };
+
+// ========================================================
+// OBSERVACIÓN EN FORMULARIO DE CARGA
+// ========================================================
+
+btnToggleObsCarga.addEventListener("click", function(){
+    formObservacionCarga.classList.toggle("activo");
+    if(formObservacionCarga.classList.contains("activo")){
+        observacionCarga.focus();
+    }
+});
 
 // ========================================================
 // MODO OSCURO
@@ -693,6 +730,7 @@ formulario.addEventListener("submit", async function(e){
     datos.append("medico", medico.value);
     datos.append("paciente", paciente.value.trim().toUpperCase());
     datos.append("solicita", solicita.value);
+    datos.append("observacion", observacionCarga.value.trim());
 
     try{
 
@@ -717,6 +755,8 @@ formulario.addEventListener("submit", async function(e){
 
         paciente.value = "";
         solicita.selectedIndex = 0;
+        observacionCarga.value = "";
+        formObservacionCarga.classList.remove("activo");
 
         setTimeout(() => { paciente.focus(); }, 100);
 
@@ -1017,3 +1057,4 @@ botonLimpiar.addEventListener("click", function(){
 
 </body>
 </html>
+
