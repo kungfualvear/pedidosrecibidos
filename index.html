@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recetas/Pedidos Recibidos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* =====================================================
+   TOKENS — colores planos (hex/rgba), sin oklch,
+   para que el modo oscuro funcione en cualquier motor.
+   ===================================================== */
+
+:root{
+
+    --bg:#ffffff;
+    --card-bg:#ffffff;
+    --hover-bg:#f7f7f8;
+
+    --texto:#0a0a0a;
+    --texto-suave:#6b7280;
+    --texto-tenue:#9ca3af;
+
+    --borde:#e5e7eb;
+    --borde-fuerte:#d4d4d8;
+
+    --icono-color:#111827;
+    --icono-color-suave:#6b7280;
+
+    --exito-bg:#ecfdf5;
+    --exito-color:#065f46;
+    --exito-borde:#a7f3d0;
+
+    --error-bg:#fef2f2;
+    --error-color:#991b1b;
+    --error-borde:#fecaca;
+
+    --nota-bg:#fffbeb;
+    --nota-color:#92400e;
+    --nota-borde:#fde68a;
+
+    --radius:1.1rem;
+    --sombra:0 1px 2px rgba(15,15,15,.04), 0 8px 20px -10px rgba(15,15,15,.10);
+
+    --fuente-display:'Sora',system-ui,sans-serif;
+    --fuente-cuerpo:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+
+body.dark{
+
+    --bg:#0a0a0b;
+    --card-bg:#141416;
+    --hover-bg:#1c1c1f;
+
+    --texto:#f5f5f6;
+    --texto-suave:#a1a1aa;
+    --texto-tenue:#71717a;
+
+    --borde:#27272a;
+    --borde-fuerte:#3f3f46;
+
+    --icono-color:#e5e7eb;
+    --icono-color-suave:#a1a1aa;
+
+    --exito-bg:#0d2a20;
+    --exito-color:#6ee7b7;
+    --exito-borde:#065f46;
+
+    --error-bg:#2c1212;
+    --error-color:#fca5a5;
+    --error-borde:#7f1d1d;
+
+    --nota-bg:#2a2110;
+    --nota-color:#fcd34d;
+    --nota-borde:#78350f;
+
+    --sombra:0 1px 2px rgba(0,0,0,.3), 0 12px 28px -12px rgba(0,0,0,.55);
+}
+
+/* =====================================================
+   BASE
+   ===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:var(--fuente-cuerpo);
+    background:var(--bg);
+    color:var(--texto);
+    padding:20px;
+    padding-top:76px;
+    min-height:100vh;
+    transition:background-color .2s ease,color .2s ease;
+}
+
+.app{
+    max-width:480px;
+    margin:auto;
+}
+
+.icon{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.screen{
+    display:none;
+}
+
+.screen.active{
+    display:block;
+}
+
+/* =====================================================
+   TOGGLE DE TEMA
+   ===================================================== */
+
+.temaToggle{
+    position:fixed;
+    top:16px;
+    right:16px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:1.5px solid var(--borde-fuerte);
+    background:var(--card-bg);
+    color:var(--icono-color);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:var(--sombra);
+    z-index:1000;
+    transition:background .2s ease,border-color .2s ease,transform .15s ease;
+}
+
+.temaToggle:hover{
+    transform:scale(1.06);
+    border-color:var(--texto-suave);
+}
+
+.temaToggle .icon{
+    width:19px;
+    height:19px;
+}
+
+/* =====================================================
+   PANTALLA INICIO
+   ===================================================== */
+
+.encabezadoInicio{
+    text-align:center;
+    margin-bottom:24px;
+}
+
+h1{
+    font-family:var(--fuente-display);
+    font-weight:800;
+    letter-spacing:-0.02em;
+    color:var(--texto);
+}
+
+.tituloInicio{
+    font-size:33px;
+    line-height:1.15;
+    margin-bottom:14px;
+}
+
+.subtituloInicio{
+    font-family:var(--fuente-cuerpo);
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--texto-suave);
+    max-width:340px;
+    margin:0 auto 30px;
+}
+
+.menuButton{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-align:left;
+    border:1.5px solid var(--borde);
+    background:var(--card-bg);
+    border-radius:18px;
+    padding:18px 18px;
+    cursor:pointer;
+    margin-bottom:14px;
+    transition:border-color .15s ease,background .15s ease,transform .12s ease;
+}
+
+.menuButton:last-child{
+    margin-bottom:0;
+}
+
+.menuButton:hover{
+    border-color:var(--borde-fuerte);
+    background:var(--hover-bg);
+    transform:translateY(-1px);
+}
+
+.menuButton .iconoCaja{
+    width:46px;
+    height:46px;
+    flex-shrink:0;
+    border:1.5px solid var(--borde);
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--icono-color);
+    background:var(--bg);
+}
+
+.menuButton .iconoCaja .icon{
+    width:21px;
+    height:21px;
+}
+
+.menuButton .menuTextos{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+
+.menuButton .menuTitulo{
+    font-family:var(--fuente-display);
+    font-weight:700;
+    font-size:15.5px;
+    color:var(--texto);
+}
+
+.menuButton .menuSubtitulo{
+    font-size:12.5px;
+    color:var(--texto-suave);
+}
+
+/* =====================================================
+   ENCABEZADO DE PÁGINA (Carga / Consulta)
+   ===================================================== */
+
+.back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:none;
+    color:var(--texto-suave);
+    font-family:var(--fuente-cuerpo);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-bottom:18px;
+    padding:2px;
+    transition:color .15s ease;
+}
+
+.back:hover{
+    color:var(--texto);
+}
+
+.tituloPagina{
+    font-size:26px;
+    margin-bottom:20px;
+}
+
+/* =====================================================
+   TARJETA CONTENEDORA
+   ===================================================== */
+
+.card{
+    background:var(--card-bg);
+    border:1.5px solid var(--borde);
+    border-radius:var(--radius);
+    padding:24px 22px;
+    box-shadow:var(--sombra);
+    transition:background .2s ease,border-color .2s ease;
+}
+
+/* =====================================================
+   CAMPOS DE FORMULARIO
+   ===================================================== */
+
+.campo{
+    margin-bottom:20px;
+}
+
+.campo:last-of-type{
+    margin-bottom:0;
+}
+
+.filaDoble{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.campoLabel{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-bottom:9px;
+}
+
+.campoLabel .icon{
+    width:15px;
+    height:15px;
+    color:var(--icono-color-suave);
+}
+
+.campoLabel span{
+    font-family:var(--fuente-cuerpo);
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--texto-suave);
+}
+
+.campoLabelFila{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    border:1.5px solid var(--borde);
+    background:var(--bg);
+    color:var(--texto);
+    border-radius:12px;
+    font-family:var(--fuente-cuerpo);
+    font-size:15.5px;
+    transition:border-color .15s ease,box-shadow .15s ease;
+}
+
+input,
+select{
+    height:50px;
+    padding:0 15px;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:var(--texto-tenue);
+}
+
+.selectWrap{
+    position:relative;
+}
+
+select{
+    appearance:none;
+    -webkit-appearance:none;
+    padding-right:38px;
+    cursor:pointer;
+}
+
+.selectWrap .icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:17px;
+    height:17px;
+    color:var(--icono-color-suave);
+    pointer-events:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    outline:none;
+    border-color:var(--texto-suave);
+    box-shadow:0 0 0 3px rgba(0,0,0,.06);
+}
+
+body.dark input:focus,
+body.dark select:focus,
+body.dark textarea:focus{
+    box-shadow:0 0 0 3px rgba(255,255,255,.07);
+}
+
+input[type="date"]{
+    color-scheme:light;
+}
+
+body.dark input[type="date"]{
+    color-scheme:dark;
+}
+
+/* =====================================================
+   BOTONES
+   ===================================================== */
+
+.submit{
+    width:100%;
+    height:52px;
+    margin-top:22px;
+    background:none;
+    border:none;
+    border-radius:14px;
+    color:var(--texto);
+    font-family:var(--fuente-display);
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,opacity .15s ease;
+}
+
+.submit:hover:not(:disabled){
+    background:var(--hover-bg);
+}
+
+.submit:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.botonSecundario{
+    width:100%;
+    height:50px;
+    margin-top:12px;
+    background:none;
+    color:var(--texto-suave);
+    border:1.5px solid var(--borde);
+    border-radius:14px;
+    font-family:var(--fuente-cuerpo);
+    font-size:14.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+}
+
+.botonSecundario:hover{
+    background:var(--hover-bg);
+    border-color:var(--borde-fuerte);
+    color:var(--texto);
+}
+
+.pildoraBtn{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    border:1.5px solid var(--borde-fuerte);
+    background:none;
+    color:var(--texto);
+    font-family:var(--fuente-cuerpo);
+    font-weight:700;
+    font-size:12.5px;
+    padding:7px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+    flex-shrink:0;
+}
+
+.pildoraBtn:hover{
+    background:var(--hover-bg);
+}
+
+.pildoraBtn .icon{
+    width:13px;
+    height:13px;
+}
+
+.iconBtnRedondo{
+    width:34px;
+    height:34px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1.5px solid var(--borde-fuerte);
+    background:none;
+    color:var(--icono-color);
+    border-radius:50%;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+
+.iconBtnRedondo:hover{
+    background:var(--hover-bg);
+}
+
+.iconBtnRedondo .icon{
+    width:15px;
+    height:15px;
+}
+
+/* =====================================================
+   OBSERVACIÓN
+   ===================================================== */
+
+.formObservacion{
+    display:none;
+    margin-top:12px;
+}
+
+.formObservacion.activo{
+    display:block;
+}
+
+.formObservacion textarea,
+.inputObservacion{
+    width:100%;
+    min-height:76px;
+    height:auto;
+    padding:11px 13px;
+    font-size:14.5px;
+    resize:vertical;
+}
+
+.formObservacionBotones{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+}
+
+.formObservacionBotones button{
+    flex:1;
+    height:42px;
+    border-radius:11px;
+    font-family:var(--fuente-cuerpo);
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+
+.btnGuardarObs{
+    border:1.5px solid var(--texto);
+    background:var(--texto);
+    color:var(--bg);
+}
+
+.btnGuardarObs:hover:not(:disabled){
+    opacity:.85;
+}
+
+.btnCancelarObs{
+    background:none;
+    color:var(--texto-suave);
+    border:1.5px solid var(--borde);
+}
+
+.btnCancelarObs:hover{
+    background:var(--hover-bg);
+}
+
+.observacionTexto{
+    margin-top:10px;
+    padding:11px 13px;
+    background:var(--nota-bg);
+    color:var(--nota-color);
+    border:1px solid var(--nota-borde);
+    border-radius:10px;
+    font-size:13.5px;
+    line-height:1.45;
+    white-space:pre-wrap;
+}
+
+/* =====================================================
+   MENSAJES DE ESTADO
+   ===================================================== */
+
+.resultado{
+    margin-top:16px;
+    display:none;
+    padding:13px 16px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    font-size:14px;
+    border:1px solid transparent;
+}
+
+.exito{
+    display:block;
+    background:var(--exito-bg);
+    color:var(--exito-color);
+    border-color:var(--exito-borde);
+}
+
+.error{
+    display:block;
+    background:var(--error-bg);
+    color:var(--error-color);
+    border-color:var(--error-borde);
+}
+
+/* =====================================================
+   RESULTADOS DE CONSULTA
+   ===================================================== */
+
+.contador{
+    font-family:var(--fuente-cuerpo);
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:12px;
+    color:var(--texto-suave);
+    text-align:center;
+}
+
+.registro{
+    border:1.5px solid var(--borde);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
+    background:var(--card-bg);
+    transition:border-color .15s ease;
+}
+
+.registro:hover{
+    border-color:var(--borde-fuerte);
+}
+
+.registro strong{
+    color:var(--texto);
+    font-weight:600;
+}
+
+.registroLinea{
+    margin-top:7px;
+    font-size:14px;
+    color:var(--texto-suave);
+}
+
+.registroCabecera{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.registroCabecera .registroLinea{
+    margin-top:0;
+}
+
+.id-mono{
+    font-variant-numeric:tabular-nums;
+    color:var(--texto-tenue);
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.02em;
+}
+
+.badge{
+    display:inline-block;
+    font-family:var(--fuente-cuerpo);
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 11px;
+    border-radius:999px;
+    border:1.5px solid var(--borde-fuerte);
+    color:var(--texto);
+    background:none;
+}
+
+.sinResultados{
+    padding:30px 18px;
+    text-align:center;
+    color:var(--texto-tenue);
+    background:var(--card-bg);
+    border:1.5px dashed var(--borde-fuerte);
+    border-radius:16px;
+    font-size:14px;
+}
+
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce){
+    *{
+        transition:none !important;
+    }
+}
+
+:focus-visible{
+    outline:2px solid var(--texto);
+    outline-offset:2px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- =====================================================
+     SPRITE DE ÍCONOS (definidos una sola vez, reutilizados con <use>)
+     ===================================================== -->
+
+<svg width="0" height="0" style="position:absolute">
+<defs>
+
+<symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></symbol>
+<symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+
+<symbol id="ic-stethoscope" viewBox="0 0 24 24"><circle cx="7" cy="4" r="1.4"/><circle cx="13" cy="4" r="1.4"/><path d="M7 5.4v3.1a3 3 0 0 0 6 0V5.4"/><path d="M10 11v3.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="19" cy="17.3" r="2.3"/></symbol>
+
+<symbol id="ic-file-plus" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M13 2v6h6"/><path d="M12 12v6M9 15h6"/></symbol>
+
+<symbol id="ic-clipboard-list" viewBox="0 0 24 24"><path d="M9 2h6a1 1 0 0 1 1 1v1.5H8V3a1 1 0 0 1 1-1Z"/><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 10.5h6M9 14h6M9 17.5h3.5"/></symbol>
+
+<symbol id="ic-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="ic-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+
+<symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+
+<symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
+
+<symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/></symbol>
+
+<symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+
+<symbol id="ic-hash" viewBox="0 0 24 24"><path d="M9 3 7 21M17 3l-2 18M4 9h17M3 15h17"/></symbol>
+
+</defs>
+</svg>
+
+<button id="temaToggle" class="temaToggle" type="button" title="Cambiar a modo oscuro"><svg class="icon"><use href="#ic-moon"/></svg></button>
+
+<div class="app">
+
+<!-- =====================================================
+     PANTALLA INICIO
+     ===================================================== -->
+
+<section id="inicio" class="screen active">
+<div class="encabezadoInicio">
+
+<h1 class="tituloInicio">Recetas y Pedidos Recibidos</h1>
+<p class="subtituloInicio">Registrá los pedidos de los pacientes y consultá el historial en segundos.</p>
+
+</div>
+
+<button id="abrirCarga" class="menuButton" type="button">
+<span class="iconoCaja"><svg class="icon"><use href="#ic-file-plus"/></svg></span>
+<span class="menuTextos">
+<span class="menuTitulo">Cargar registros</span>
+<span class="menuSubtitulo">Nuevo pedido o receta de un paciente</span>
+</span>
+</button>
+
+<button id="abrirConsulta" class="menuButton" type="button">
+<span class="iconoCaja"><svg class="icon"><use href="#ic-clipboard-list"/></svg></span>
+<span class="menuTextos">
+<span class="menuTitulo">Consultar registros</span>
+<span class="menuSubtitulo">Buscar por paciente, médico o fecha</span>
+</span>
+</button>
+
+</section>
+
+<!-- =====================================================
+     PANTALLA CARGA
+     ===================================================== -->
+
+<section id="pantallaCarga" class="screen">
+
+<button class="back" id="volverInicio1" type="button"><svg class="icon" style="width:15px;height:15px"><use href="#ic-arrow-left"/></svg> Inicio</button>
+
+<h1 class="tituloPagina">Cargar registro</h1>
+
+<div class="card">
+<form id="formulario">
+
+<!-- ID -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-hash"/></svg><span>ID</span></div>
+<input id="idRegistro" autocomplete="off" placeholder="Automático si se deja vacío">
+</div>
+
+<!-- MÉDICO -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-stethoscope"/></svg><span>Médico</span></div>
+<div class="selectWrap">
+<select id="medico" required>
+<option selected>Dr. Bustos</option>
+<option>Dr. Zalazar</option>
+</select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
+</div>
+
+<!-- PACIENTE -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-user"/></svg><span>Paciente</span></div>
+<input id="paciente" autocomplete="off" placeholder="Apellido y nombre" required>
+</div>
+
+<!-- SOLICITA -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-clipboard-list"/></svg><span>Solicita</span></div>
+<div class="selectWrap">
+<select id="solicita" required>
+<option selected>Receta</option>
+<option>Pedido</option>
+<option>Receta y Pedido</option>
+<option>Receta y Laboratorio</option>
+<option>Pañales</option>
+<option>Receta y Pañales</option>
+<option>Laboratorio y Otro</option>
+<option>Empadronamiento</option>
+<option>Receta y Empadronamiento</option>
+<option>Laboratorio</option>
+<option>Otro</option>
+</select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
+</div>
+
+<!-- OBSERVACIÓN -->
+<div class="campo">
+<div class="campoLabelFila">
+<div class="campoLabel"><svg class="icon"><use href="#ic-pencil"/></svg><span>Observación</span></div>
+<button type="button" class="pildoraBtn" id="btnToggleObsCarga"><svg class="icon"><use href="#ic-plus"/></svg><span id="btnToggleObsCargaTexto">Agregar</span></button>
+</div>
+<div class="formObservacion" id="formObservacionCarga">
+<textarea id="observacionCarga" class="inputObservacion" placeholder="Escribí una observación..."></textarea>
+</div>
+</div>
+
+<button class="submit" id="boton" type="submit">Registrar</button>
+
+<div id="resultado" class="resultado"></div>
+
+</form>
+</div>
+
+</section>
+
+<!-- =====================================================
+     PANTALLA CONSULTA
+     ===================================================== -->
+
+<section id="pantallaConsulta" class="screen">
+
+<button class="back" id="volverInicio2" type="button"><svg class="icon" style="width:15px;height:15px"><use href="#ic-arrow-left"/></svg> Inicio</button>
+
+<h1 class="tituloPagina">Consultar registros</h1>
+
+<div class="card">
+
+<!-- BÚSQUEDA GENERAL -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-search"/></svg><span>Buscar</span></div>
+<input id="busqueda" type="search" placeholder="Paciente, ID, médico..." autocomplete="off">
+</div>
+
+<!-- FILTROS MÉDICO / SOLICITA -->
+<div class="campo filaDoble">
+
+<div>
+<div class="campoLabel"><svg class="icon"><use href="#ic-stethoscope"/></svg><span>Médico</span></div>
+<div class="selectWrap">
+<select id="filtroMedico">
+<option value="">Todos</option>
+<option>Dr. Bustos</option>
+<option>Dr. Zalazar</option>
+</select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
+</div>
+
+<div>
+<div class="campoLabel"><svg class="icon"><use href="#ic-clipboard-list"/></svg><span>Solicita</span></div>
+<div class="selectWrap">
+<select id="filtroSolicita">
+<option value="">Todos</option>
+<option>Receta</option>
+<option>Pedido</option>
+<option>Receta y Pedido</option>
+<option>Empadronamiento</option>
+<option>Receta y Empadronamiento</option>
+<option>Otro</option>
+</select>
+<svg class="icon"><use href="#ic-chevron-down"/></svg>
+</div>
+</div>
+
+</div>
+
+<!-- FILTRO FECHA -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-calendar"/></svg><span>Fecha</span></div>
+<input id="filtroFecha" type="date">
+</div>
+
+<button class="submit" id="botonBuscar" type="button">Buscar</button>
+<button class="botonSecundario" id="botonLimpiar" type="button">Limpiar filtros</button>
+
+<div id="estadoBusqueda" class="resultado"></div>
+
+</div>
+
+<div id="resultadosBusqueda" style="margin-top:16px;"></div>
+
+</section>
+
+</div>
+
+<script>
+
+// ========================================================
+// CONFIGURACIÓN
+// ========================================================
+
+const URL_APPS_SCRIPT =
+"https://script.google.com/macros/s/AKfycby7t8lwOICXhgAD22sLtZWvSgtFKqWjd0B4Mq7U83mJuCxHMmGRdlMXwo9lEomAeIzkVg/exec";
+
+// ========================================================
+// REFERENCIAS
+// ========================================================
+
+const screens = document.querySelectorAll(".screen");
+const inicio = document.getElementById("inicio");
+const pantallaCarga = document.getElementById("pantallaCarga");
+const pantallaConsulta = document.getElementById("pantallaConsulta");
+const abrirCarga = document.getElementById("abrirCarga");
+const abrirConsulta = document.getElementById("abrirConsulta");
+const volverInicio1 = document.getElementById("volverInicio1");
+const volverInicio2 = document.getElementById("volverInicio2");
+const formulario = document.getElementById("formulario");
+const idRegistro = document.getElementById("idRegistro");
+const medico = document.getElementById("medico");
+const paciente = document.getElementById("paciente");
+const solicita = document.getElementById("solicita");
+const boton = document.getElementById("boton");
+const resultado = document.getElementById("resultado");
+const temaToggle = document.getElementById("temaToggle");
+const btnToggleObsCarga = document.getElementById("btnToggleObsCarga");
+const btnToggleObsCargaTexto = document.getElementById("btnToggleObsCargaTexto");
+const formObservacionCarga = document.getElementById("formObservacionCarga");
+const observacionCarga = document.getElementById("observacionCarga");
+
+// ========================================================
+// FUNCIÓN CAMBIO DE PANTALLA
+// ========================================================
+
+function abrir(id){
+    screens.forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+// ========================================================
+// NAVEGACIÓN
+// ========================================================
+
+abrirCarga.onclick = () => {
+    abrir("pantallaCarga");
+    setTimeout(() => paciente.focus(), 150);
+};
+
+abrirConsulta.onclick = () => {
+    abrir("pantallaConsulta");
+};
+
+volverInicio1.onclick = () => {
+    abrir("inicio");
+};
+
+volverInicio2.onclick = () => {
+    abrir("inicio");
+};
+
+// ========================================================
+// MODO OSCURO
+// ========================================================
+
+const CLAVE_TEMA = "temaSeleccionado";
+const iconoTemaToggle = temaToggle.querySelector("use");
+
+function actualizarIconoTema(){
+    const esOscuro = document.body.classList.contains("dark");
+    iconoTemaToggle.setAttribute("href", esOscuro ? "#ic-sun" : "#ic-moon");
+    temaToggle.title = esOscuro ? "Cambiar a modo claro" : "Cambiar a modo oscuro";
+}
+
+if(localStorage.getItem(CLAVE_TEMA) === "oscuro"){
+    document.body.classList.add("dark");
+}
+
+actualizarIconoTema();
+
+temaToggle.onclick = () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem(
+        CLAVE_TEMA,
+        document.body.classList.contains("dark") ? "oscuro" : "claro"
+    );
+    actualizarIconoTema();
+};
+
+// ========================================================
+// OBSERVACIÓN EN FORMULARIO DE CARGA
+// ========================================================
+
+btnToggleObsCarga.addEventListener("click", function(){
+    formObservacionCarga.classList.toggle("activo");
+    const abierto = formObservacionCarga.classList.contains("activo");
+    btnToggleObsCargaTexto.textContent = abierto ? "Quitar" : "Agregar";
+    if(abierto){
+        observacionCarga.focus();
+    }
+});
+
+// ========================================================
+// MÉDICO SELECCIONADO
+// ========================================================
+
+const CLAVE_MEDICO = "medicoSeleccionado";
+
+medico.value = localStorage.getItem(CLAVE_MEDICO) || "Dr. Bustos";
+
+medico.onchange = () => {
+    localStorage.setItem(CLAVE_MEDICO, medico.value);
+};
+
+// ========================================================
+// CONVERTIR PACIENTE A MAYÚSCULAS
+// ========================================================
+
+paciente.addEventListener("input", function(){
+    this.value = this.value.toUpperCase();
+});
+
+// ========================================================
+// OBTENER FECHA LOCAL (AAAA-MM-DD, para enviar al backend)
+// ========================================================
+
+function obtenerFecha(){
+    const d = new Date();
+    return d.getFullYear() + "-" +
+        String(d.getMonth()+1).padStart(2,"0") + "-" +
+        String(d.getDate()).padStart(2,"0");
+}
+
+// ========================================================
+// FORMATEAR FECHA PARA MOSTRAR (DD/MM/AAAA)
+// Acepta AAAA-MM-DD, fechas con hora, o DD/MM/AAAA ya formateado
+// ========================================================
+
+function formatearFecha(valor){
+
+    if(!valor) return "";
+
+    const texto = String(valor).trim();
+
+    let m = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m){
+        return m[3] + "/" + m[2] + "/" + m[1];
+    }
+
+    m = texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m){
+        return m[1].padStart(2,"0") + "/" + m[2].padStart(2,"0") + "/" + m[3];
+    }
+
+    const d = new Date(texto);
+    if(!isNaN(d)){
+        return String(d.getDate()).padStart(2,"0") + "/" +
+            String(d.getMonth()+1).padStart(2,"0") + "/" +
+            d.getFullYear();
+    }
+
+    return texto;
+
+}
+
+// ========================================================
+// CALCULAR SIGUIENTE ID CONSECUTIVO
+// A partir de un ID con formato DIAMESORDEN (ej: 180805),
+// devuelve el siguiente correlativo (180806). Si el ID no
+// tiene un formato numérico reconocible, devuelve "" para
+// que el próximo registro vuelva a generarse automáticamente.
+// ========================================================
+
+function siguienteId(id){
+
+    const texto = String(id || "").trim();
+
+    if(!/^\d+$/.test(texto) || texto.length < 3){
+        return "";
+    }
+
+    const prefijo = texto.slice(0, -2);
+    const sufijo = texto.slice(-2);
+
+    const siguienteNumero = parseInt(sufijo, 10) + 1;
+    const siguienteSufijo = String(siguienteNumero).padStart(sufijo.length, "0");
+
+    return prefijo + siguienteSufijo;
+
+}
+
+// ========================================================
+// MOSTRAR RESULTADO DE REGISTRO
+// ========================================================
+
+function mostrarResultado(tipo, texto){
+    resultado.className = "resultado " + tipo;
+    resultado.innerHTML = texto;
+}
+
+// ========================================================
+// REGISTRAR
+// ========================================================
+
+formulario.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const datos = new URLSearchParams();
+
+    datos.append("id", idRegistro.value.trim());
+    datos.append("fecha", obtenerFecha());
+    datos.append("medico", medico.value);
+    datos.append("paciente", paciente.value.trim().toUpperCase());
+    datos.append("solicita", solicita.value);
+    datos.append("observacion", observacionCarga.value.trim());
+
+    try{
+
+        boton.disabled = true;
+        boton.textContent = "Registrando...";
+
+        const r = await fetch(URL_APPS_SCRIPT, {
+            method:"POST",
+            body:datos
+        });
+
+        const j = await r.json();
+
+        if(!j.ok){
+            throw new Error(j.mensaje || "Error");
+        }
+
+        mostrarResultado(
+            "exito",
+            "Registro realizado<br><strong>" + j.id + "</strong>"
+        );
+
+        paciente.value = "";
+        idRegistro.value = siguienteId(j.id);
+        solicita.selectedIndex = 0;
+        observacionCarga.value = "";
+        formObservacionCarga.classList.remove("activo");
+        btnToggleObsCargaTexto.textContent = "Agregar";
+
+        setTimeout(() => { paciente.focus(); }, 100);
+
+    }catch(error){
+
+        console.error(error);
+        mostrarResultado("error", "No se pudo registrar.");
+
+    }
+
+    boton.disabled = false;
+    boton.textContent = "Registrar";
+
+});
+
+// ========================================================
+// ELEMENTOS DE BÚSQUEDA
+// ========================================================
+
+const busqueda = document.getElementById("busqueda");
+const filtroMedico = document.getElementById("filtroMedico");
+const filtroSolicita = document.getElementById("filtroSolicita");
+const filtroFecha = document.getElementById("filtroFecha");
+const botonBuscar = document.getElementById("botonBuscar");
+const botonLimpiar = document.getElementById("botonLimpiar");
+const resultadosBusqueda = document.getElementById("resultadosBusqueda");
+const estadoBusqueda = document.getElementById("estadoBusqueda");
+
+// ========================================================
+// ESCAPAR HTML
+// Evita interpretar contenido de la planilla como HTML
+// ========================================================
+
+function escaparHTML(valor){
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// ========================================================
+// MOSTRAR RESULTADOS
+// ========================================================
+
+function mostrarResultados(registros){
+
+    if(!registros || registros.length === 0){
+        resultadosBusqueda.innerHTML =
+            '<div class="sinResultados">No se encontraron registros.</div>';
+        return;
+    }
+
+    resultadosBusqueda.innerHTML =
+
+        '<div class="contador">' +
+        registros.length +
+        (registros.length === 1 ? " registro encontrado" : " registros encontrados") +
+        '</div>' +
+
+        registros.map(r => {
+
+            const idSeguro = escaparHTML(r.id);
+            const fechaSegura = escaparHTML(formatearFecha(r.fecha));
+            const horaSegura = escaparHTML(r.hora);
+            const pacienteSeguro = escaparHTML(r.paciente);
+            const medicoSeguro = escaparHTML(r.medico);
+            const solicitaSegura = escaparHTML(r.solicita);
+            const observacionSegura = escaparHTML(r.observacion || "");
+            const tieneObservacion = observacionSegura.trim().length > 0;
+            const iconoObs = tieneObservacion ? "#ic-pencil" : "#ic-plus";
+
+            return `
+                <div class="registro" data-id="${idSeguro}">
+
+                    <div class="registroCabecera">
+                        <div class="registroLinea id-mono">ID ${idSeguro}</div>
+                        <button type="button" class="iconBtnRedondo" data-accion="toggleObs" title="${tieneObservacion ? "Editar observación" : "Agregar observación"}"><svg class="icon"><use href="${iconoObs}"/></svg></button>
+                    </div>
+
+                    <div class="registroLinea"><strong>Fecha:</strong> ${fechaSegura} · ${horaSegura}</div>
+                    <div class="registroLinea"><strong>Paciente:</strong> ${pacienteSeguro}</div>
+                    <div class="registroLinea"><strong>Médico:</strong> ${medicoSeguro}</div>
+                    <div class="registroLinea"><span class="badge">${solicitaSegura}</span></div>
+
+                    <div class="bloqueObservacion">
+                        ${tieneObservacion ? `<div class="observacionTexto"><strong>Observación:</strong> ${observacionSegura}</div>` : ""}
+                    </div>
+
+                    <div class="formObservacion">
+                        <textarea class="inputObservacion" placeholder="Escribí una observación...">${observacionSegura}</textarea>
+                        <div class="formObservacionBotones">
+                            <button type="button" class="btnGuardarObs" data-accion="guardarObs">Guardar</button>
+                            <button type="button" class="btnCancelarObs" data-accion="cancelarObs">Cancelar</button>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+// ========================================================
+// OBSERVACIONES: ABRIR / CANCELAR / GUARDAR
+// ========================================================
+
+resultadosBusqueda.addEventListener("click", async function(e){
+
+    const botonToggle = e.target.closest('[data-accion="toggleObs"]');
+    if(botonToggle){
+        const tarjeta = botonToggle.closest(".registro");
+        const form = tarjeta.querySelector(".formObservacion");
+        form.classList.toggle("activo");
+        if(form.classList.contains("activo")){
+            form.querySelector("textarea").focus();
+        }
+        return;
+    }
+
+    const botonCancelar = e.target.closest('[data-accion="cancelarObs"]');
+    if(botonCancelar){
+        botonCancelar.closest(".registro")
+            .querySelector(".formObservacion")
+            .classList.remove("activo");
+        return;
+    }
+
+    const botonGuardar = e.target.closest('[data-accion="guardarObs"]');
+    if(botonGuardar){
+
+        const tarjeta = botonGuardar.closest(".registro");
+        const id = tarjeta.dataset.id;
+        const textarea = tarjeta.querySelector(".inputObservacion");
+        const texto = textarea.value.trim();
+
+        const datos = new URLSearchParams();
+        datos.append("accion", "guardarObservacion");
+        datos.append("id", id);
+        datos.append("observacion", texto);
+
+        const textoOriginal = botonGuardar.textContent;
+        botonGuardar.disabled = true;
+        botonGuardar.textContent = "Guardando...";
+
+        try{
+
+            const r = await fetch(URL_APPS_SCRIPT, {
+                method:"POST",
+                body:datos
+            });
+
+            const j = await r.json();
+
+            if(!j.ok){
+                throw new Error(j.mensaje || "Error");
+            }
+
+            const bloque = tarjeta.querySelector(".bloqueObservacion");
+            bloque.innerHTML = texto
+                ? `<div class="observacionTexto"><strong>Observación:</strong> ${escaparHTML(texto)}</div>`
+                : "";
+
+            const botonToggleTarjeta = tarjeta.querySelector('[data-accion="toggleObs"] use');
+            botonToggleTarjeta.setAttribute("href", texto ? "#ic-pencil" : "#ic-plus");
+
+            const botonToggleTitulo = tarjeta.querySelector('[data-accion="toggleObs"]');
+            botonToggleTitulo.title = texto ? "Editar observación" : "Agregar observación";
+
+            tarjeta.querySelector(".formObservacion").classList.remove("activo");
+
+        }catch(error){
+
+            console.error(error);
+            alert("No se pudo guardar la observación.");
+
+        }finally{
+
+            botonGuardar.disabled = false;
+            botonGuardar.textContent = textoOriginal;
+
+        }
+
+    }
+
+});
+
+// ========================================================
+// BUSCAR REGISTROS
+// ========================================================
+
+async function buscarRegistros(){
+
+    const parametros = new URLSearchParams();
+
+    parametros.append("accion", "buscar");
+    parametros.append("q", busqueda.value.trim());
+    parametros.append("medico", filtroMedico.value);
+    parametros.append("solicita", filtroSolicita.value);
+    parametros.append("fecha", filtroFecha.value);
+
+    try{
+
+        botonBuscar.disabled = true;
+        botonBuscar.textContent = "Buscando...";
+
+        estadoBusqueda.className = "resultado exito";
+        estadoBusqueda.textContent = "Buscando registros...";
+
+        resultadosBusqueda.innerHTML = "";
+
+        const respuesta = await fetch(URL_APPS_SCRIPT + "?" + parametros.toString());
+
+        if(!respuesta.ok){
+            throw new Error("HTTP " + respuesta.status);
+        }
+
+        const datos = await respuesta.json();
+
+        if(!datos.ok){
+            throw new Error(datos.mensaje || "Error de consulta");
+        }
+
+        const registros = datos.registros || [];
+
+        mostrarResultados(registros);
+
+        estadoBusqueda.className = "resultado exito";
+        estadoBusqueda.textContent =
+            registros.length === 0
+            ? "No se encontraron registros."
+            : (registros.length === 1
+                ? "1 registro encontrado."
+                : registros.length + " registros encontrados.");
+
+    }catch(error){
+
+        console.error("Error de búsqueda:", error);
+
+        estadoBusqueda.className = "resultado error";
+        estadoBusqueda.textContent = "No se pudo realizar la búsqueda.";
+
+        resultadosBusqueda.innerHTML = "";
+
+    }finally{
+
+        botonBuscar.disabled = false;
+        botonBuscar.textContent = "Buscar";
+
+    }
+
+}
+
+// ========================================================
+// BOTÓN BUSCAR
+// ========================================================
+
+botonBuscar.addEventListener("click", buscarRegistros);
+
+// ========================================================
+// ENTER EN CAMPO DE BÚSQUEDA
+// ========================================================
+
+busqueda.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        e.preventDefault();
+        buscarRegistros();
+    }
+});
+
+// ========================================================
+// CAMBIO AUTOMÁTICO DE FILTROS
+// ========================================================
+
+[filtroMedico, filtroSolicita, filtroFecha].forEach(elemento => {
+    elemento.addEventListener("change", buscarRegistros);
+});
+
+// ========================================================
+// LIMPIAR FILTROS
+// ========================================================
+
+botonLimpiar.addEventListener("click", function(){
+
+    busqueda.value = "";
+    filtroMedico.value = "";
+    filtroSolicita.value = "";
+    filtroFecha.value = "";
+
+    estadoBusqueda.className = "resultado";
+    estadoBusqueda.textContent = "";
+
+    resultadosBusqueda.innerHTML = "";
+
+});
+
+</script>
+
+</body>
+</html>
