@@ -364,6 +364,40 @@ textarea::placeholder{
     color:var(--texto-tenue);
 }
 
+.inputConAccion{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btnPegar{
+    width:50px;
+    height:50px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1.5px solid var(--borde);
+    background:var(--bg);
+    color:var(--icono-color);
+    border-radius:12px;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+
+.btnPegar:hover{
+    background:var(--hover-bg);
+}
+
+.btnPegar:active{
+    transform:scale(.96);
+}
+
+.btnPegar .icon{
+    width:19px;
+    height:19px;
+}
+
 .selectWrap{
     position:relative;
 }
@@ -748,6 +782,7 @@ body.dark input[type="date"]{
 
 <symbol id="ic-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
 
+<symbol id="ic-clipboard-paste" viewBox="0 0 24 24"><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><path d="M12 11v6M9 14l3 3 3-3"/></symbol>
 <symbol id="ic-hash" viewBox="0 0 24 24"><path d="M9 3 7 21M17 3l-2 18M4 9h17M3 15h17"/></symbol>
 
 </defs>
@@ -855,7 +890,10 @@ body.dark input[type="date"]{
 <!-- PACIENTE -->
 <div class="campo">
 <div class="campoLabel"><svg class="icon"><use href="#ic-user"/></svg><span>Paciente</span></div>
+<div class="inputConAccion">
+<button id="btnPegarPaciente" class="btnPegar" type="button" title="Pegar desde el portapapeles" aria-label="Pegar paciente desde el portapapeles"><svg class="icon"><use href="#ic-clipboard-paste"/></svg></button>
 <input id="paciente" autocomplete="off" placeholder="Apellido y nombre" required>
+</div>
 </div>
 
 <!-- SOLICITA -->
@@ -1271,6 +1309,20 @@ medico.onchange = () => {
 
 paciente.addEventListener("input", function(){
     this.value = this.value.toUpperCase();
+});
+
+// Pegar el contenido del portapapeles en el campo paciente
+document.getElementById("btnPegarPaciente").addEventListener("click", async function(){
+    try{
+        const texto = await navigator.clipboard.readText();
+        paciente.value = texto.replace(/\s+/g, " ").trim().toUpperCase();
+        paciente.dispatchEvent(new Event("input", { bubbles:true }));
+        paciente.focus();
+    }catch(e){
+        // Sin permiso o contexto no seguro: se deja el campo listo para pegar a mano
+        paciente.focus();
+        alert("No se pudo leer el portapapeles. Permití el acceso o pegá manualmente.");
+    }
 });
 
 // ========================================================
