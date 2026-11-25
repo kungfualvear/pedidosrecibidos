@@ -705,6 +705,13 @@ body.dark input[type="date"]{
     letter-spacing:.02em;
 }
 
+.beneficio-mono{
+    font-variant-numeric:tabular-nums;
+    letter-spacing:.04em;
+    font-weight:700;
+    color:var(--texto);
+}
+
 .badge{
     display:inline-block;
     font-family:var(--fuente-cuerpo);
@@ -784,6 +791,7 @@ body.dark input[type="date"]{
 
 <symbol id="ic-clipboard-paste" viewBox="0 0 24 24"><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/><path d="M12 11v6M9 14l3 3 3-3"/></symbol>
 <symbol id="ic-hash" viewBox="0 0 24 24"><path d="M9 3 7 21M17 3l-2 18M4 9h17M3 15h17"/></symbol>
+<symbol id="ic-id-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5.5 17c.7-1.8 2.1-2.7 3.5-2.7s2.8.9 3.5 2.7M14.5 10h4M14.5 13.5h4"/></symbol>
 
 </defs>
 </svg>
@@ -891,9 +899,15 @@ body.dark input[type="date"]{
 <div class="campo">
 <div class="campoLabel"><svg class="icon"><use href="#ic-user"/></svg><span>Paciente</span></div>
 <div class="inputConAccion">
-<button id="btnPegarPaciente" class="btnPegar" type="button" title="Pegar desde el portapapeles" aria-label="Pegar paciente desde el portapapeles"><svg class="icon"><use href="#ic-clipboard-paste"/></svg></button>
+<button id="btnPegarPaciente" class="btnPegar" type="button" title="Pegar nombre y beneficio desde el portapapeles" aria-label="Pegar nombre y beneficio desde el portapapeles"><svg class="icon"><use href="#ic-clipboard-paste"/></svg></button>
 <input id="paciente" autocomplete="off" placeholder="Apellido y nombre" required>
 </div>
+</div>
+
+<!-- BENEFICIO -->
+<div class="campo">
+<div class="campoLabel"><svg class="icon"><use href="#ic-id-card"/></svg><span>Beneficio</span></div>
+<input id="beneficio" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="13 o 14 dígitos (se llena al pegar)">
 </div>
 
 <!-- SOLICITA -->
@@ -955,7 +969,7 @@ body.dark input[type="date"]{
 <!-- BÚSQUEDA GENERAL -->
 <div class="campo">
 <div class="campoLabel"><svg class="icon"><use href="#ic-search"/></svg><span>Buscar</span></div>
-<input id="busqueda" type="search" placeholder="Paciente, ID, médico..." autocomplete="off">
+<input id="busqueda" type="search" placeholder="Paciente, ID, beneficio, médico..." autocomplete="off">
 </div>
 
 <!-- FILTROS MÉDICO / SOLICITA -->
@@ -1042,6 +1056,7 @@ const formulario = document.getElementById("formulario");
 const idRegistro = document.getElementById("idRegistro");
 const medico = document.getElementById("medico");
 const paciente = document.getElementById("paciente");
+const beneficio = document.getElementById("beneficio");
 const solicita = document.getElementById("solicita");
 const boton = document.getElementById("boton");
 const resultado = document.getElementById("resultado");
@@ -1304,20 +1319,100 @@ medico.onchange = () => {
 };
 
 // ========================================================
-// CONVERTIR PACIENTE A MAYÚSCULAS
+// PACIENTE / BENEFICIO
 // ========================================================
 
+// Paciente: se convierte a mayúsculas mientras se escribe.
 paciente.addEventListener("input", function(){
     this.value = this.value.toUpperCase();
 });
 
-// Pegar el contenido del portapapeles en el campo paciente
+// Beneficio: solo dígitos, hasta 14.
+beneficio.addEventListener("input", function(){
+    const limpio = this.value.replace(/\D/g, "").slice(0, 14);
+    if(limpio !== this.value){
+        this.value = limpio;
+    }
+});
+
+// Reparte el texto del portapapeles entre #paciente y #beneficio.
+// Formatos aceptados:
+//   "JUAN PEREZ\n12345678901234"     → nombre + beneficio (formato principal)
+//   "JUAN PEREZ 12345678901234"      → nombre + beneficio (misma línea)
+//   "JUAN PEREZ"                     → solo nombre
+//   "12345678901234"                 → solo beneficio
+function repartirPegadoPacienteBeneficio(texto){
+
+    const bruto = String(texto || "").trim();
+
+    if(!bruto){
+        return { nombre:"", beneficio:"" };
+    }
+
+    const partes = bruto.split(/[\r\n]+/).map(s => s.trim()).filter(Boolean);
+
+    let nombre = "";
+    let numeroBeneficio = "";
+
+    // 1) Buscar en cada línea si alguna es puramente un número de 13-14 dígitos.
+    for(const parte of partes){
+        const soloDigitos = parte.replace(/\D/g, "");
+        if(soloDigitos.length >= 13 && soloDigitos.length <= 14 && soloDigitos === parte){
+            numeroBeneficio = soloDigitos;
+            break;
+        }
+    }
+
+    // 2) Tomar como nombre la primera línea que no sea el número.
+    for(const parte of partes){
+        if(parte === numeroBeneficio) continue;
+        if(!nombre){ nombre = parte; break; }
+    }
+
+    // 3) Si no hubo separación por líneas y no encontramos número,
+    //    intentar extraer un bloque de 13-14 dígitos en cualquier posición.
+    if(!numeroBeneficio){
+        const m = bruto.match(/(\d{13,14})/);
+        if(m){
+            numeroBeneficio = m[1];
+            if(!nombre){
+                nombre = bruto.replace(m[1], " ").replace(/\s+/g, " ").trim();
+            }
+        }
+    }
+
+    return {
+        nombre: nombre.replace(/\s+/g, " ").trim().toUpperCase(),
+        beneficio: numeroBeneficio
+    };
+
+}
+
+// Pegar el contenido del portapapeles en Paciente + Beneficio
 document.getElementById("btnPegarPaciente").addEventListener("click", async function(){
     try{
         const texto = await navigator.clipboard.readText();
-        paciente.value = texto.replace(/\s+/g, " ").trim().toUpperCase();
-        paciente.dispatchEvent(new Event("input", { bubbles:true }));
-        paciente.focus();
+        const partes = repartirPegadoPacienteBeneficio(texto);
+
+        if(partes.nombre){
+            paciente.value = partes.nombre;
+            paciente.dispatchEvent(new Event("input", { bubbles:true }));
+        }
+
+        if(partes.beneficio){
+            beneficio.value = partes.beneficio;
+            beneficio.dispatchEvent(new Event("input", { bubbles:true }));
+        }
+
+        // Foco inteligente: al primero que quede incompleto.
+        if(!paciente.value.trim()){
+            paciente.focus();
+        }else if(!beneficio.value.trim()){
+            beneficio.focus();
+        }else{
+            paciente.focus();
+        }
+
     }catch(e){
         // Sin permiso o contexto no seguro: se deja el campo listo para pegar a mano
         paciente.focus();
@@ -1415,12 +1510,14 @@ formulario.addEventListener("submit", async function(e){
 
     // Se guarda el paciente cargado para mostrarlo en el mensaje de éxito
     const pacienteCargado = paciente.value.trim().toUpperCase();
+    const beneficioCargado = beneficio.value.trim();
 
     datos.append("token", obtenerToken());
     datos.append("id", idRegistro.value.trim());
     datos.append("fecha", obtenerFecha());
     datos.append("medico", medico.value);
     datos.append("paciente", pacienteCargado);
+    datos.append("beneficio", beneficioCargado);
     datos.append("solicita", solicita.value);
     datos.append("observacion", observacionCarga.value.trim());
 
@@ -1450,10 +1547,12 @@ formulario.addEventListener("submit", async function(e){
         mostrarResultado(
             "exito",
             "Registro realizado<br><strong>" + escaparHTML(j.id) + "</strong><br>" +
-            escaparHTML(pacienteCargado)
+            escaparHTML(pacienteCargado) +
+            (beneficioCargado ? "<br><span class=\"beneficio-mono\">" + escaparHTML(beneficioCargado) + "</span>" : "")
         );
 
         paciente.value = "";
+        beneficio.value = "";
         idRegistro.value = siguienteId(j.id);
         solicita.selectedIndex = 0;
         observacionCarga.value = "";
@@ -1526,6 +1625,7 @@ function mostrarResultados(registros){
             const fechaSegura = escaparHTML(formatearFecha(r.fecha));
             const horaSegura = escaparHTML(r.hora);
             const pacienteSeguro = escaparHTML(r.paciente);
+            const beneficioSeguro = escaparHTML(r.beneficio || "");
             const medicoSeguro = escaparHTML(r.medico);
             const solicitaSegura = escaparHTML(r.solicita);
             const observacionSegura = escaparHTML(r.observacion || "");
@@ -1546,6 +1646,7 @@ function mostrarResultados(registros){
 
                     <div class="registroLinea"><strong>Fecha:</strong> ${fechaSegura} · ${horaSegura}</div>
                     <div class="registroLinea"><strong>Paciente:</strong> ${pacienteSeguro}</div>
+                    ${beneficioSeguro ? `<div class="registroLinea"><strong>Beneficio:</strong> <span class="beneficio-mono">${beneficioSeguro}</span></div>` : ""}
                     <div class="registroLinea"><strong>Médico:</strong> ${medicoSeguro}</div>
                     ${cargadoPorSeguro ? `<div class="registroLinea"><strong>Cargado por:</strong> ${cargadoPorSeguro}</div>` : ""}
                     <div class="registroLinea"><span class="badge">${solicitaSegura}</span></div>
@@ -1784,11 +1885,6 @@ botonLimpiar.addEventListener("click", function(){
     resultadosBusqueda.innerHTML = "";
 
 });
-
-</script>
-
-</body>
-</html>
 
 </script>
 
